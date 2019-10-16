@@ -14,6 +14,4 @@ use mvc_router\data\gesture\Manager;
  * @package mvc_router\data\gesture\custom
  */
 
-class MyManager extends Manager {
-	protected $entity_class = 'mvc_router\data\gesture\custom\entities\MyManager';
-}
+class User extends Manager {}

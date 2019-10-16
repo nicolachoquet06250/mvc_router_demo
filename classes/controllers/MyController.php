@@ -1,7 +1,7 @@
 <?php
 
 
-use mvc_router\data\gesture\custom\managers\MyManager;
+use mvc_router\data\gesture\custom\managers\User;
 use mvc_router\mvc\Controller;
 use mvc_router\mvc\views\BasicView;
 use mvc_router\router\Router;
@@ -83,11 +83,11 @@ class MyController extends Controller {
 
 	/**
 	 * @route /test/managers
-	 * @param MyManager $manager
+	 * @param User $manager
 	 * @return string
 	 * @throws Exception
 	 */
-	public function test_manager(MyManager $manager) {
+	public function test_manager( User $manager) {
 		return '<pre>'.$this->var_dump($manager->get_entity());
 	}
 }
