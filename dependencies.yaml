@@ -21,11 +21,19 @@ add:
       type: 'manager'
       name: 'user_manager'
       file: '__DIR__/classes/datas/managers/User.php'
+    \mvc_router\data\gesture\custom\managers\Role:
+      type: 'manager'
+      name: 'role_manager'
+      file: '__DIR__/classes/datas/managers/Role.php'
 
     \mvc_router\data\gesture\custom\entities\User:
       type: 'entity'
       name: 'user_entity'
       file: '__DIR__/classes/datas/entities/User.php'
+    \mvc_router\data\gesture\custom\entities\Role:
+      type: 'entity'
+      name: 'role_entity'
+      file: '__DIR__/classes/datas/entities/Role.php'
 
   controllers:
     \mvc_router\mvc\controllers\MyController:
