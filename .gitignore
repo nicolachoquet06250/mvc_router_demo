@@ -3,3 +3,6 @@ autoload.php
 htaccess.php
 index.php
 update_dependencies.php
+classes/confs/*.json
+classes/confs/*.yaml
+classes/confs/*.xml
