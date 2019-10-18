@@ -2,6 +2,7 @@
 
 namespace mvc_router\mvc\controllers;
 
+use Exception;
 use mvc_router\data\gesture\custom\managers\User;
 use mvc_router\mvc\Controller;
 use mvc_router\mvc\views\BasicView;
@@ -15,9 +16,10 @@ class MyController extends Controller {
 
 	/**
 	 * @route /mon/example/
+	 * @return string
 	 */
-	public function index() {
-		return'index';
+	public function index(): string {
+		return 'index';
 	}
 
 	/**
@@ -43,20 +45,20 @@ class MyController extends Controller {
 
 	/**
 	 * @route /test/lol/var
+	 * @return string
 	 */
-	public function toto() {
-		return'hello 1';
+	public function toto(): string {
+		return 'hello 1';
 	}
 
 	/**
-	 * @route \/([a-zA-Z0-9]+)\/hello-toi
+	 * @route \/(?<param1>[a-zA-Z0-9]+)\/hello-toi
 	 * @param Service $service
-	 * @param         $param1
 	 */
-	public function hello_toi(Service $service, $param1) {
+	public function hello_toi(Service $service) {
 		echo '<pre>';
 		$service->hello();
-		var_dump($param1);
+		var_dump($this->param('param1'));
 		echo '</pre>';
 	}
 
@@ -66,7 +68,7 @@ class MyController extends Controller {
 	 * @param BasicView $basicView
 	 * @return bool|string
 	 */
-	public function translate(Translate $service_translation, BasicView $basicView) {
+	public function translate(Translate $service_translation, BasicView $basicView): BasicView {
 		$sentence_p1 = $service_translation->__('Je suis %1', ['Nicolas']);
 		$sentence_p2 = $service_translation->__('et toi tu es %1', ['Yann']);
 		$sentence_p3 = $service_translation->__('Je suis %1 et tu es %2', ['Nicolas', 'Yann']);
@@ -78,7 +80,7 @@ class MyController extends Controller {
 	/**
 	 * @route /conf
 	 */
-	public function test_confs() {
+	public function test_confs(): string {
 		return $this->html($this->service_translation->get_default_language());
 	}
 	
@@ -87,9 +89,8 @@ class MyController extends Controller {
 	 * @param User $manager
 	 * @return string
 	 * @throws Exception
-	 * @throws \Exception
 	 */
-	public function test_manager( User $manager) {
+	public function test_manager( User $manager): string {
 		return '<pre>'.$this->var_dump($manager->get_entity());
 	}
 }

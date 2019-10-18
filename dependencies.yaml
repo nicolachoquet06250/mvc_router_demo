@@ -38,11 +38,11 @@ add:
   controllers:
     \mvc_router\mvc\controllers\MyController:
       name: 'my_controller'
-      file: '__DIR__/classes/mvc/controllers/MyController.php'
+      file: '__DIR__/classes/mvc/controllers/front/other/MyController.php'
 
     \mvc_router\mvc\controllers\WebSocket:
       name: 'websocket_controller'
-      file: '__DIR__/classes/mvc/controllers/WebSocket.php'
+      file: '__DIR__/classes/mvc/controllers/front/websockets/WebSocket.php'
 
     \mvc_router\mvc\controllers\api\ControllerAPI1:
       name: 'api_user'
@@ -50,7 +50,7 @@ add:
 
     \mvc_router\mvc\controllers\backoffice\Translations:
       name: 'backoffice_translations'
-      file: '__DIR__/classes/mvc/controllers/backoffice/Translations.php'
+      file: '__DIR__/classes/mvc/controllers/front/backoffice/Translations.php'
 
   ws_controllers:
     \mvc_router\mvc\controllers\websockets\Chat:
