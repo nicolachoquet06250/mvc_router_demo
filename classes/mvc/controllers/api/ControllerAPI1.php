@@ -1,7 +1,7 @@
 <?php
 
 
-namespace mvc_router\mvc\api;
+namespace mvc_router\mvc\controllers\api;
 
 
 use mvc_router\mvc\Controller;

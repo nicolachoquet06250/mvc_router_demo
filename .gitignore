@@ -2,3 +2,4 @@
 autoload.php
 htaccess.php
 index.php
+update_dependencies.php

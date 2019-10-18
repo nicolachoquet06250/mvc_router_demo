@@ -1,7 +1,7 @@
 <?php
 
 
-namespace mvc_router\mvc\backoffice;
+namespace mvc_router\mvc\controllers\backoffice;
 
 
 use Exception;

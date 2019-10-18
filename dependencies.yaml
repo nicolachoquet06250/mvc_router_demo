@@ -1,0 +1,65 @@
+add:
+  views:
+    \mvc_router\mvc\views\Translation:
+      name: 'translation_view'
+      file: '__DIR__/classes/mvc/views/Translation.php'
+
+    \mvc_router\mvc\views\BasicView:
+      name: 'my_basic_view'
+      file: '__DIR__/classes/mvc/views/BasicView.php'
+
+    \mvc_router\mvc\views\Translations:
+      name: 'translations_view'
+      file: '__DIR__/classes/mvc/views/Translations.php'
+
+    \mvc_router\mvc\views\WebSocket:
+      name: 'websocket_view'
+      file: '__DIR__/classes/mvc/views/WebSocket.php'
+
+  data_models:
+    \mvc_router\data\gesture\custom\managers\User:
+      type: 'manager'
+      name: 'user_manager'
+      file: '__DIR__/classes/datas/managers/User.php'
+
+    \mvc_router\data\gesture\custom\entities\User:
+      type: 'entity'
+      name: 'user_entity'
+      file: '__DIR__/classes/datas/entities/User.php'
+
+  controllers:
+    \mvc_router\mvc\controllers\MyController:
+      name: 'my_controller'
+      file: '__DIR__/classes/mvc/controllers/MyController.php'
+
+    \mvc_router\mvc\controllers\WebSocket:
+      name: 'websocket_controller'
+      file: '__DIR__/classes/mvc/controllers/WebSocket.php'
+
+    \mvc_router\mvc\controllers\api\ControllerAPI1:
+      name: 'api_user'
+      file: '__DIR__/classes/mvc/controllers/api/ControllerAPI1.php'
+
+    \mvc_router\mvc\controllers\backoffice\Translations:
+      name: 'backoffice_translations'
+      file: '__DIR__/classes/mvc/controllers/backoffice/Translations.php'
+
+  ws_controllers:
+    \mvc_router\mvc\controllers\websockets\Chat:
+      name: 'ws_chat'
+      file: '__DIR__/classes/mvc/controllers/websockets/Chat.php'
+
+  confs:
+    \mvc_router\confs\custom\WebSocket:
+      name: 'websocket_routes'
+      file: '__DIR__/classes/confs/WebSocket.php'
+      parent: '\mvc_router\Base'
+
+extends:
+  confs:
+    \mvc_router\confs\Mysql:
+      class:
+        old: 'mvc_router\confs\Mysql'
+        new: 'mvc_router\confs\custom\Mysql'
+      name: 'mysql'
+      file: '__DIR__/classes/confs/Mysql.php'
