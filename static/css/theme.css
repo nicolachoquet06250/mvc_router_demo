@@ -1,0 +1,40 @@
+/* -- LIGHT THEME -- */
+
+.mobile-navigation .mdl-navigation__link.is-active {
+    background-color: rgba(227,227,227, 1);
+}
+
+.desktop-navigation .mdl-navigation__link.is-active {
+    background-color: rgba(227,227,227, 0.5);
+}
+
+.desktop-navigation .mdl-navigation__link:hover, .mobile-navigation .mdl-navigation__link:hover {
+    background-color: rgba(227,227,227, 0.1);
+}
+
+/* -- DARK THEME -- */
+
+.demo-layout-waterfall--dark, .demo-layout-waterfall--dark .mdl-layout__drawer, .demo-layout-waterfall--dark .mdl-layout__drawer .mobile-navigation {
+    background-color: black;
+    color: white;
+}
+
+.demo-layout-waterfall--dark .mdl-layout__drawer .mobile-navigation .mdl-navigation__link {
+    color: white;
+}
+
+.demo-layout-waterfall--dark .mdl-layout__drawer .mobile-navigation .mdl-navigation__link.is-active, .demo-layout-waterfall--dark .mdl-layout__drawer .mobile-navigation .mdl-navigation__link:hover {
+    color: black;
+}
+
+.demo-layout-waterfall--dark header, .demo-layout-waterfall--dark .mdl-layout__drawer-button .material-icons, .demo-layout-waterfall--dark .desktop-navigation a.mdl-navigation__link {
+    color: black;
+}
+
+.demo-layout-waterfall--dark .mdl-tabs__tab, .demo-layout-waterfall--dark .mdl-tabs__tab.is-active {
+    color: white!important;
+}
+
+.demo-layout-waterfall--dark .mdl-tabs.is-upgraded .mdl-tabs__tab.is-active::after {
+    height: 3px;
+}

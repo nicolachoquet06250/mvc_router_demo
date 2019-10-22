@@ -5,10 +5,8 @@ namespace mvc_router\mvc\controllers;
 use Exception;
 use mvc_router\data\gesture\custom\managers\User;
 use mvc_router\mvc\Controller;
-use mvc_router\mvc\views\BasicView;
 use mvc_router\router\Router;
 use mvc_router\services\Service;
-use mvc_router\services\Translate;
 
 class MyController extends Controller {
 	/** @var \mvc_router\services\Translate $service_translation */
@@ -60,21 +58,6 @@ class MyController extends Controller {
 		$service->hello();
 		var_dump($this->param('param1'));
 		echo '</pre>';
-	}
-
-	/**
-	 * @route /translate
-	 * @param Translate                       $service_translation
-	 * @param BasicView $basicView
-	 * @return bool|string
-	 */
-	public function translate(Translate $service_translation, BasicView $basicView): BasicView {
-		$sentence_p1 = $service_translation->__('Je suis %1', ['Nicolas']);
-		$sentence_p2 = $service_translation->__('et toi tu es %1', ['Yann']);
-		$sentence_p3 = $service_translation->__('Je suis %1 et tu es %2', ['Nicolas', 'Yann']);
-		$basicView->assign('var', 'translated');
-		$basicView->assign('translated', $sentence_p1.' '.$sentence_p2.'; '.$sentence_p3);
-		return $basicView;
 	}
 
 	/**

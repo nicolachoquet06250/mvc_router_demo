@@ -4,10 +4,24 @@
 namespace mvc_router\mvc\views;
 
 
-use mvc_router\mvc\View;
-
-class Translations extends View {
-
+class Translations extends Layout {
+	
+	private $lang;
+	private $selected_default;
+	private $options;
+	private $url;
+	private $table_of_translations;
+	
+	public function after_construct() {
+		parent::after_construct();
+		
+		list($this->lang,
+			$this->selected_default,
+			$this->options,
+			$this->url,
+			$this->table_of_translations) = $this->generate_all_vars_string();
+	}
+	
 	/**
 	 * @return array
 	 */
@@ -42,36 +56,42 @@ class Translations extends View {
 		}
 		return [$lang, $selected_default, $options, $url, $table_of_translations];
 	}
-
+	
 	/**
-	 * @return string
+	 * @inheritDoc
 	 */
-	public function render(): string {
-		list($lang, $selected_default, $options, $url, $table_of_translations) = $this->generate_all_vars_string();
+	public function head(): string {
+		$this->assign('is_responsive', true);
+		$this->assign('font_icons', self::FONT_AWESOME);
+		$this->assign('framework', self::BOOTSTRAP);
+		$this->assign('scripts', ['functions.js']);
+		return parent::head();
+	}
+	
+	/**
+	 * @inheritDoc
+	 */
+	public function page_header(): string {
+		return "<form id='change-lang' method='get' action=''>
+					<select name='lang' onchange='document.querySelector(\"#change-lang\").submit()'>
+			<option value='' disabled {$this->selected_default}>{$this->__( 'Choisir' )}</option>
+				{$this->options}
+			</select>
+		</form>";
+	}
+	
+	/**
+	 * @inheritDoc
+	 */
+	public function body(): string {
+		$this->assign('main_style', 'margin-top: 5px; border-top: 1px solid black;');
 		$regenerate_translations = $this->get('regenerate_translations');
 		$regenerate_logs = '';
 		if($regenerate_translations) {
 			$regenerate_logs = $this->get('regenerate_logs');
 		}
-		return "<!DOCTYPE html>
-	<html lang='{$lang}'>
-		<head>
-			<meta charset='utf-8' />
-			<title>{$this->__('Liste des traductions')}</title>
-		</head>
-		<body>
-			<header>
-				<form id='change-lang' method='get' action=''>
-					<select name='lang' onchange='document.querySelector(\"#change-lang\").submit()'>
-						<option value='' disabled {$selected_default}>{$this->__('Choisir')}</option>
-						{$options}
-					</select>
-				</form>
-			</header>
-			
-			<main style='margin-top: 5px; border-top: 1px solid black;'>
-				
-				<div style='display: inline-block; width: 20%; position: absolute; padding-top: 5px;'>
+		
+		return "<div style='display: inline-block; width: 20%; position: absolute; padding-top: 5px;'>
 					<input type='button' onclick='regenerate_translations()' value='{$this->__('Régénérer les traductions')}' />
 					<div id='regenerate_logs'>
 						{$regenerate_logs}
@@ -89,7 +109,7 @@ class Translations extends View {
 								</tr>
 							</thead>
 							<tbody>
-								{$table_of_translations}
+								{$this->table_of_translations}
 							</tbody>
 							<tfoot>
 								<tr>
@@ -109,40 +129,6 @@ class Translations extends View {
 							</tfoot>
 						</table>
 					</form>
-				</div>
-				
-			</main>
-		</body>
-		<script>
-			function add() {
-				let key = document.querySelector('#key').value;
-				let value = document.querySelector('#value').value;
-				  
-				let form = new FormData();
-				form.append('key', key);
-				form.append('value', value);
-				form.append('add', 1);
-				  
-				fetch('{$url}?lang={$lang}', {
-					method: 'POST',
-					body: form
-				}).then(() => window.location.href = '{$url}?lang={$lang}')
-			}
-			
-			function regenerate_translations() {
-				let form = new FormData();
-				form.append('regenerate', 1);
-				
-				fetch('{$url}/regenerate', {
-					method: 'POST',
-					body: form,
-				}).then(result => result.text())
-				.then(text => {
-					let html = text.replace(\"\\n\", '<br>');
-					document.querySelector('#regenerate_logs').innerHTML += html;
-				});
-			}
-		</script>
-	</html>";
+				</div>";
 	}
 }

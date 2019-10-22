@@ -2,25 +2,38 @@ add:
   views:
     \mvc_router\mvc\views\Translation:
       name: 'translation_view'
-      file: '__DIR__/classes/mvc/views/Translation.php'
-
-    \mvc_router\mvc\views\BasicView:
-      name: 'my_basic_view'
-      file: '__DIR__/classes/mvc/views/BasicView.php'
+      file: '__DIR__/classes/mvc/views/translations/Translation.php'
 
     \mvc_router\mvc\views\Translations:
       name: 'translations_view'
-      file: '__DIR__/classes/mvc/views/Translations.php'
+      file: '__DIR__/classes/mvc/views/translations/Translations.php'
 
     \mvc_router\mvc\views\WebSocket:
       name: 'websocket_view'
       file: '__DIR__/classes/mvc/views/WebSocket.php'
+
+    \mvc_router\mvc\views\DocLayout:
+      name: 'doc_layout_view'
+      file: '__DIR__/classes/mvc/views/DocLayout.php'
+
+    \mvc_router\mvc\views\Home:
+      name: 'home_view'
+      file: '__DIR__/classes/mvc/views/Home.php'
+
+    \mvc_router\mvc\views\Documentation:
+      name: 'documentation_view'
+      file: '__DIR__/classes/mvc/views/Documentation.php'
+
+    \mvc_router\mvc\views\Api:
+      name: 'api_view'
+      file: '__DIR__/classes/mvc/views/Api.php'
 
   data_models:
     \mvc_router\data\gesture\custom\managers\User:
       type: 'manager'
       name: 'user_manager'
       file: '__DIR__/classes/datas/managers/User.php'
+
     \mvc_router\data\gesture\custom\managers\Role:
       type: 'manager'
       name: 'role_manager'
@@ -30,6 +43,7 @@ add:
       type: 'entity'
       name: 'user_entity'
       file: '__DIR__/classes/datas/entities/User.php'
+
     \mvc_router\data\gesture\custom\entities\Role:
       type: 'entity'
       name: 'role_entity'
@@ -51,6 +65,18 @@ add:
     \mvc_router\mvc\controllers\backoffice\Translations:
       name: 'backoffice_translations'
       file: '__DIR__/classes/mvc/controllers/front/backoffice/Translations.php'
+
+    \mvc_router\mvc\controllers\Home:
+      name: 'home_controller'
+      file: '__DIR__/classes/mvc/controllers/front/Home.php'
+
+    \mvc_router\mvc\controllers\Documentation:
+      name: 'doc_controller'
+      file: '__DIR__/classes/mvc/controllers/front/Documentation.php'
+
+    \mvc_router\mvc\controllers\Api:
+      name: 'api_controller'
+      file: '__DIR__/classes/mvc/controllers/front/Api.php'
 
   ws_controllers:
     \mvc_router\mvc\controllers\websockets\Chat:
