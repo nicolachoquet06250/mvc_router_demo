@@ -3,7 +3,7 @@ function init_darkTheme(first = false) {
     if(first && dark) {
         document.querySelector('#dark-theme').setAttribute('checked', 'checked');
     }
-    let site_container = document.querySelector('.demo-layout-waterfall');
+    let site_container = document.querySelector('.mdl-layout');
     let loader_container = document.querySelector('.loader-container');
 
     dark ? site_container.classList.add('demo-layout-waterfall--dark') : site_container.classList.remove('demo-layout-waterfall--dark');

@@ -30,6 +30,10 @@
 			'list'  => [],
 		];
 		
+		protected $tabs = [];
+		
+		protected $write_sub_menu = false;
+		
 		public function after_construct() {
 			parent::after_construct();
 			
@@ -96,60 +100,76 @@
 			return $_list;
 		}
 		
-		public function body(): string {
-			return "
-	<div class='demo-layout-waterfall mdl-layout mdl-js-layout'>
-		<header class='mdl-layout__header mdl-layout__header--waterfall'>
-			<!-- Top row, always visible -->
-			<div class='mdl-layout__header-row'>
-				<!-- Title -->
-				<span class='mdl-layout-title logo'>
-					<img src='/static/images/logo_mvc_router_white.png'
-						 data-base_src='/static/images/logo_mvc_router_white.png' alt='logo' style='height: 40px' />
-					{$this->get('title')}
-				</span>
-				<div class='mdl-layout-spacer'></div>
-				<div class='mdl-textfield mdl-js-textfield mdl-textfield--expandable
-							mdl-textfield--floating-label mdl-textfield--align-right'>
-					<label class='mdl-button mdl-js-button mdl-button--icon'
-							for='waterfall-exp'>
-						<i class='material-icons'>search</i>
-					</label>
-					<div class='mdl-textfield__expandable-holder'>
-						<input class='mdl-textfield__input' placeholder='Recherche' type='search' name='sample'
-								id='waterfall-exp'>
-					</div>
-				</div>
-			</div>
-			<!-- Bottom row, not visible on scroll -->
-			<div class='mdl-layout__header-row'>
-				<div class='mdl-layout-spacer'></div>
-				<!-- Navigation -->
-				{$this->menu()}
-			</div>
-		</header>
-		<div class='mdl-layout__drawer logo'>
-			<img src='/static/images/logo_mvc_router_black.png'
-				 data-base_src='/static/images/logo_mvc_router_black.png' alt='logo' class='responsive-img' />
-			<span class='mdl-layout-title'>{$this->get('short_title')}</span>
-			{$this->menu('mobile')}
-		</div>
-		<main class='mdl-layout__content'>
-			<div class='page-content'>
-				{$this->page_content()}
-			</div>
-			<footer class='page-footer mdl-mega-footer'>
-				<div class='mdl-mega-footer__middle-section'>
-				    {$this->get_footer_list($this->first_footer_list)}
-				    {$this->get_footer_list($this->second_footer_list)}
-				    {$this->get_footer_list($this->third_footer_list)}
-				    {$this->get_footer_list($this->fourth_footer_list)}
-				</div>
-				{$this->get_footer_list($this->footer_bottom, true)}
-			</footer>
-		</main>
+		protected function get_documentation_menu() {
+			if($this->write_sub_menu) {
+				return "<div class='mdl-layout__tab-bar mdl-js-ripple-effect'>"
+					.implode("\n", array_map(function($tab) {
+						$method = str_replace([' ', '-'], '_', strtolower($tab));
+						$method_in_link = str_replace('_', '-', $method);
+						return "<a href='/documentation/{$method_in_link}' class='mdl-layout__tab ".($this->get('sub_page') === $method ? 'is-active' : '')."'>".ucfirst($tab)."</a>";
+					}, $this->tabs))
+					."</div>";
+			}
+			return '';
+		}
+		
+		protected function get_documentation_menu_tab_content() {
+			$content = '';
+			if($this->write_sub_menu) {
+				$content .= implode("\n", array_map(function($tab) {
+					$method = str_replace([' ', '-'], '_', strtolower($tab));
+					return "<section class='mdl-layout__tab-panel ".($this->get('sub_page') === $method ? 'is-active' : '')."'
+								 id='scroll-{$method}'>
+		<div class='page-content'>{$this->$method()}</div>
+	</section>";
+				}, $this->tabs));
+			}
+			return $content."
+	<div class='page-content'>
+		{$this->page_content()}
 	</div>
 			";
+		}
+		
+		public function body(): string {
+			return "<div class='mdl-layout mdl-js-layout mdl-layout--fixed-header'>
+  <header class='mdl-layout__header'>
+    <div class='mdl-layout__header-row'>
+      <!-- Title -->
+      <span class='mdl-layout-title'>
+		{$this->get('title')}
+	  </span>
+    </div>
+    <div class='mdl-layout__header-row'>
+		<div class='mdl-layout-spacer'></div>
+		<!-- Navigation -->
+		{$this->menu()}
+	</div>
+    <!-- Tabs -->
+    {$this->get_documentation_menu()}
+  </header>
+  <div class='mdl-layout__drawer'>
+    <span class='mdl-layout-title logo' style='text-align: center;'>
+		<img src='/static/images/logo_mvc_router_black.png'
+			 data-base_src='/static/images/logo_mvc_router_black.png'
+			 alt='logo' class='responsive-img' />
+		<span class='mdl-layout-title'>{$this->get('short_title')}</span>
+	</span>
+	{$this->menu('mobile')}
+  </div>
+  <main class='mdl-layout__content'>
+    {$this->get_documentation_menu_tab_content()}
+    <footer class='page-footer mdl-mega-footer'>
+		<div class='mdl-mega-footer__middle-section'>
+			{$this->get_footer_list($this->first_footer_list)}
+			{$this->get_footer_list($this->second_footer_list)}
+			{$this->get_footer_list($this->third_footer_list)}
+			{$this->get_footer_list($this->fourth_footer_list)}
+		</div>
+		{$this->get_footer_list($this->footer_bottom, true)}
+	</footer>
+  </main>
+</div>";
 		}
 		
 		public function loader(): string {
@@ -157,7 +177,6 @@
 	<div class='loader-container'>
 		<div></div>
 		<div class='container'>
-			<!-- MDL Spinner Component with Single Color -->
 			<div class='mdl-spinner mdl-spinner--single-color mdl-js-spinner is-active' id='loader'></div>
 		</div>
 		<div></div>

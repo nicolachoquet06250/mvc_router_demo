@@ -53,6 +53,12 @@
 		];
 		
 		public function page_content(): string {
-			return 'api';
+			return "
+<div class='mdl-grid'>
+	<div class='mdl-cell mdl-cell--12-col'>
+		<h2>Documentation de l'API</h2>
+	</div>
+</div>
+";
 		}
 	}

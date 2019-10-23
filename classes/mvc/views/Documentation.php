@@ -52,7 +52,7 @@
 			],
 		];
 		
-		private $tabs = [
+		protected $tabs = [
 			'Get Started',
 			'Services',
 			'Controllers',
@@ -92,8 +92,9 @@
 			return "/documentation/{$tabs[count($tabs) - 1]}";
 		}
 		
-		private function get_started(): string {
+		protected function get_started(): string {
 			return "
+			<h3>Commencer</h3>
 			<ul>
 				<li>Eddard</li>
 				<li>Catelyn</li>
@@ -106,8 +107,9 @@
 			";
 		}
 		
-		private function services(): string {
+		protected function services(): string {
 			return "
+			<h3>Services</h3>
 			<ul>
 				<li>Tywin</li>
 				<li>Cersei</li>
@@ -117,8 +119,9 @@
 			";
 		}
 		
-		private function controllers(): string {
+		protected function controllers(): string {
 			return "
+			<h3>Controlleurs</h3>
 			<ul>
 				<li>Viserys</li>
 				<li>Daenerys</li>
@@ -126,8 +129,9 @@
 			";
 		}
 		
-		private function views(): string {
+		protected function views(): string {
 			return "
+			<h3>Vues</h3>
 			<ul>
 				<li>Viserys</li>
 				<li>Daenerys</li>
@@ -135,8 +139,9 @@
 			";
 		}
 		
-		private function entities(): string {
+		protected function entities(): string {
 			return "
+			<h3>Entitées</h3>
 			<ul>
 				<li>Viserys</li>
 				<li>Daenerys</li>
@@ -144,8 +149,9 @@
 			";
 		}
 		
-		private function managers(): string {
+		protected function managers(): string {
 			return "
+			<h3>Managers</h3>
 			<ul>
 				<li>Viserys</li>
 				<li>Daenerys</li>
@@ -153,8 +159,9 @@
 			";
 		}
 		
-		private function commands(): string {
+		protected function commands(): string {
 			return "
+			<h3>Commandes</h3>
 			<ul>
 				<li>Viserys</li>
 				<li>Daenerys</li>
@@ -162,45 +169,32 @@
 			";
 		}
 		
-		private function configurations(): string {
+		protected function configurations(): string {
 			return "
+			<h3>Configurations</h3>
 			<ul>
 				<li>Viserys</li>
 				<li>Daenerys</li>
 			</ul>
 			";
 		}
+		
+		protected $write_sub_menu = true;
 		
 		public function page_content(): string {
-			$tabs = implode("\n", array_map(function($tab) {
-				$method = str_replace([' ', '-'], '_', strtolower($tab));
-				$method_in_link = str_replace('_', '-', $method);
-				return "<a href='/documentation/{$method_in_link}' class='mdl-tabs__tab ".($this->get('sub_page') === $method ? 'is-active' : '')."'>".ucfirst($tab)."</a>";
-			}, $this->tabs));
-			
-			$tabs_page = implode("\n", array_map(function($tab) {
-				$method = str_replace([' ', '-'], '_', strtolower($tab));
-				return "<div class='mdl-tabs__panel ".($this->get('sub_page') === $method ? 'is-active' : '')."'
-								id='".$method."-panel'>{$this->$method()}</div>";
-			}, $this->tabs));
 			return "
-<div class='mdl-tabs mdl-js-tabs mdl-js-ripple-effect'>
-	<div class='mdl-tabs__tab-bar'>{$tabs}</div>
-	{$tabs_page}
 	<div class='mdl-grid' style='margin-top: 100px;'>
-		<div class='mdl-cell mdl-cell--1'>
+		<div class='mdl-cell mdl-cell--6-col-desktop mdl-cell--4-col-tablet mdl-cell--2-col-phone'>
 			<a href='{$this->get_prevent_tab_url()}'>
 				<button class='mdl-button mdl-js-button mdl-button--raised mdl-button--colored'>Prevent</button>
 			</a>
 		</div>
-		<div class='mdl-cell mdl-cell--10'></div>
-		<div class='mdl-cell mdl-cell--1' style='text-align: right'>
+		<div class='mdl-cell mdl-cell--6-col-desktop mdl-cell--4-col-tablet mdl-cell--2-col-phone' style='text-align: right'>
 			<a href='{$this->get_next_tab_url()}'>
 				<button class='mdl-button mdl-js-button mdl-button--raised mdl-button--colored'>Next</button>
 			</a>
 		</div>
 	</div>
-</div>
 ";
 		}
 	}

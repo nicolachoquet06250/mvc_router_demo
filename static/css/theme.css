@@ -45,6 +45,22 @@
     align-items: center;
 }
 
+.mdl-tabs__tab-bar--mobile {
+    overflow-x: auto;
+    padding-top: 50px;
+    width: auto;
+    padding-left: 500px;
+}
+
+.mdl-tabs__tab-bar--mobile .mdl-tabs__tab {
+    width: auto;
+    overflow: unset;
+}
+
+.mdl-layout__tab-bar-button:not(.is-active) {
+    display: none;
+}
+
 /* -- DARK THEME -- */
 
 .demo-layout-waterfall--dark, .demo-layout-waterfall--dark .mdl-layout__drawer, .demo-layout-waterfall--dark .mdl-layout__drawer .mobile-navigation {
