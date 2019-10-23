@@ -54,5 +54,4 @@ window.addEventListener('load', () => {
         init_darkTheme(true);
         resolve();
     }).then(fadeOutLoader);
-
 });

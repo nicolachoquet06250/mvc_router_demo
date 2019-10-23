@@ -63,6 +63,21 @@
 			'Configurations'
 		];
 		
+		protected $write_sub_menu = true;
+		
+		public function after_construct() {
+			parent::after_construct();
+			
+			// add material design light dropdown
+			$this->assign('stylesheets', array_merge($this->get('stylesheets'), [
+				'http://creativeit.github.io/getmdl-select/getmdl-select.min.css'
+			]));
+			$this->assign('scripts', array_merge($this->get('scripts'), [
+				'http://creativeit.github.io/getmdl-select/getmdl-select.min.js',
+				'table.js'
+			]));
+		}
+		
 		private function get_next_tab_url() {
 			$tabs = array_map(function($tab) {
 				return str_replace([' ', '_'], '-', strtolower($tab));
@@ -92,18 +107,70 @@
 			return "/documentation/{$tabs[count($tabs) - 1]}";
 		}
 		
+		protected function get_table_group(string $title, callable $get_content, $hide = true) {
+			$id_part = str_replace(' ', '-', $title);
+			$id_part = strtolower($id_part);
+			return "
+	<tr>
+		<th style='text-align: left; cursor: pointer;'
+			onclick='toggleCell(document.querySelector(`#{$id_part}-cell`), this)'>
+			<div class='mdl-grid'>
+				<div class='mdl-cell mdl-cell--11-col-desktop mdl-cell--7-col-tablet mdl-cell--3-col-phone'>
+					{$title}
+				</div>
+				<div class='mdl-cell mdl-cell--1-col' style='text-align: right;'>
+					<span class='material-icons'>keyboard_arrow_down</span>
+				</div>
+			</div>
+		</th>
+	</tr>
+	<tr id='{$id_part}-cell' class='hiddable'>
+		<td style='text-align: left' class='".($hide ? 'hide' : '')."'>
+			<div class='mdl-grid'>
+				<div class='mdl-cell mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone'>
+					{$get_content()}
+				</div>
+			</div>
+		</td>
+	</tr>
+			";
+		}
+		
 		protected function get_started(): string {
 			return "
-			<h3>Commencer</h3>
-			<ul>
-				<li>Eddard</li>
-				<li>Catelyn</li>
-		 		<li>Robb</li>
-				<li>Sansa</li>
-				<li>Brandon</li>
-				<li>Arya</li>
-				<li>Rickon</li>
-			</ul>
+			<div class='mdl-grid'>
+				<div class='mdl-cell mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone'>
+					<h3>Commencer</h3>
+					<table class='mdl-data-table mdl-js-data-table' style='width: 100%'>
+						<tbody>
+							{$this->get_table_group('Commencer', function() {
+								return "<ul>
+											<li>Eddard</li>
+											<li>Catelyn</li>
+									        <li>Robb</li>
+											<li>Sansa</li>
+											<li>Brandon</li>
+											<li>Arya</li>
+											<li>Rickon</li>
+										</ul>";
+							}, false)}
+							
+							{$this->get_table_group('Installation', function() {
+								return "<ul>
+											<li>Eddard</li>
+											<li>Catelyn</li>
+									        <li>Robb</li>
+											<li>Sansa</li>
+											<li>Brandon</li>
+											<li>Arya</li>
+											<li>Rickon</li>
+										</ul>";
+							})}
+						</tbody>
+					</table>
+
+				</div>
+			</div>
 			";
 		}
 		
@@ -178,8 +245,6 @@
 			</ul>
 			";
 		}
-		
-		protected $write_sub_menu = true;
 		
 		public function page_content(): string {
 			return "
