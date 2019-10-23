@@ -3,9 +3,11 @@ function init_darkTheme(first = false) {
     if(first && dark) {
         document.querySelector('#dark-theme').setAttribute('checked', 'checked');
     }
-    let container = document.querySelector('.demo-layout-waterfall');
+    let site_container = document.querySelector('.demo-layout-waterfall');
+    let loader_container = document.querySelector('.loader-container');
 
-    dark ? container.classList.add('demo-layout-waterfall--dark') : container.classList.remove('demo-layout-waterfall--dark');
+    dark ? site_container.classList.add('demo-layout-waterfall--dark') : site_container.classList.remove('demo-layout-waterfall--dark');
+    dark ? loader_container.classList.add('loader-container--dark') : loader_container.classList.remove('loader-container--dark');
 
     document.querySelectorAll('.logo').forEach(elem => {
         let img = elem.querySelector('img');
@@ -32,19 +34,25 @@ function handleVisibilityChange() {
     document.querySelector('link[rel=icon]').setAttribute('href', href);
 }
 
-window.onload = () => {
-    let visibilityChange = (() => {
-        let visibilityChange;
-        if (typeof document.hidden !== "undefined") { // Opera 12.10 and Firefox 18 and later support
-            visibilityChange = "visibilitychange";
-        } else if (typeof document.msHidden !== "undefined") {
-            visibilityChange = "msvisibilitychange";
-        } else if (typeof document.webkitHidden !== "undefined") {
-            visibilityChange = "webkitvisibilitychange";
-        }
-        return visibilityChange;
-    })();
-    if(typeof visibilityChange !== undefined)
-        document.addEventListener(visibilityChange, handleVisibilityChange, false);
-    init_darkTheme(true);
-};
+window.addEventListener('load', () => {
+    new Promise(resolve => {
+        (() => {
+            let visibilityChange = (() => {
+                let visibilityChange;
+                if (typeof document.hidden !== "undefined") { // Opera 12.10 and Firefox 18 and later support
+                    visibilityChange = "visibilitychange";
+                } else if (typeof document.msHidden !== "undefined") {
+                    visibilityChange = "msvisibilitychange";
+                } else if (typeof document.webkitHidden !== "undefined") {
+                    visibilityChange = "webkitvisibilitychange";
+                }
+                return visibilityChange;
+            })();
+            if(typeof visibilityChange !== undefined)
+                document.addEventListener(visibilityChange, handleVisibilityChange, false);
+        })();
+        init_darkTheme(true);
+        resolve();
+    }).then(fadeOutLoader);
+
+});

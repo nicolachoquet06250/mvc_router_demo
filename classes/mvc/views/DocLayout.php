@@ -43,7 +43,7 @@
 			$this->assign( 'js_at_the_bottom', false );
 			$this->assign('stylesheets', ['theme.css']);
 			$this->assign('icon', '/static/images/favicon_black.ico');
-			$this->assign('scripts', ['switch_to_dark.js']);
+			$this->assign('scripts', ['loader.js', 'switch_to_dark.js']);
 		}
 		
 		public function page_content() {
@@ -148,6 +148,19 @@
 				{$this->get_footer_list($this->footer_bottom, true)}
 			</footer>
 		</main>
+	</div>
+			";
+		}
+		
+		public function loader(): string {
+			return "
+	<div class='loader-container'>
+		<div></div>
+		<div class='container'>
+			<!-- MDL Spinner Component with Single Color -->
+			<div class='mdl-spinner mdl-spinner--single-color mdl-js-spinner is-active' id='loader'></div>
+		</div>
+		<div></div>
 	</div>
 			";
 		}
