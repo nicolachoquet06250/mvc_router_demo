@@ -1,13 +1,51 @@
 function init_darkTheme(first = false) {
     let dark = sessionStorage.getItem('dark_theme') === 'true';
-    if(first && dark) {
-        document.querySelector('#dark-theme').setAttribute('checked', 'checked');
-    }
+    let switch2dark = document.querySelector('#dark-theme');
+    if(first && dark) switch2dark.setAttribute('checked', 'checked');
     let site_container = document.querySelector('.mdl-layout');
     let loader_container = document.querySelector('.loader-container');
 
-    dark ? site_container.classList.add('demo-layout-waterfall--dark') : site_container.classList.remove('demo-layout-waterfall--dark');
-    dark ? loader_container.classList.add('loader-container--dark') : loader_container.classList.remove('loader-container--dark');
+    let switchPrism = dark => {
+        let prismCSS = document.querySelector('link[href="/static/css/prism.css"]');
+        let prismCSSDark = document.querySelector('link[href="/static/css/prism-dark.css"]');
+        let baseHrefPrism = prismCSS ? prismCSS.getAttribute('data-base_href')
+            : (prismCSSDark ? prismCSSDark.getAttribute('data-base_href') : false);
+
+        let prismJS = document.querySelector('script[src="/static/js/prism.js"]');
+        let prismJSDark = document.querySelector('script[src="/static/js/prism-dark.js"]');
+        let baseSrcPrism = prismJS !== null ? prismJS.getAttribute('data-base_src')
+            : (prismJSDark !== null ? prismJSDark.getAttribute('data-base_src') : false);
+
+        let prismHref = prismCSS !== null ? prismCSS.getAttribute('href')
+            : (prismCSSDark !== null ? prismCSSDark.getAttribute('href') : false);
+        let prismSrc = prismJS !== null ? prismJS.getAttribute('src')
+            : (prismJSDark !== null ? prismJSDark.getAttribute('src') : false);
+
+        if(prismCSS !== null || prismCSSDark !== null) {
+            if((dark || prismHref !== baseHrefPrism) && (!dark || prismHref === baseHrefPrism)) {
+                prismHref = prismHref.substr((prismHref.split('.')[0]).length - '-dark'.length, '-dark'.length) === '-dark'
+                    ? prismHref.replace('-dark', '') : `${prismHref.split('.')[0]}-dark.css`;
+            }
+        }
+
+        if(prismJS !== null || prismJSDark !== null) {
+            if((dark || prismSrc !== baseSrcPrism) && (!dark || prismSrc === baseSrcPrism)) {
+                prismSrc = prismSrc.substr((prismSrc.split('.')[0]).length - '-dark'.length, '-dark'.length) === '-dark'
+                    ? prismSrc.replace('-dark', '') : `${prismSrc.split('.')[0]}-dark.js`;
+            }
+        }
+
+        prismCSS !== null ? prismCSS.setAttribute('href', prismHref)
+            : (prismCSSDark !== null ? prismCSSDark.setAttribute('href', prismHref) : null);
+
+        prismJS !== null ? prismJS.setAttribute('src', prismSrc)
+            : (prismJSDark !== null ? prismJSDark.setAttribute('src', prismSrc) : null);
+    };
+
+    dark ? site_container.classList.add('theme--dark')
+        : site_container.classList.remove('theme--dark');
+    dark ? loader_container.classList.add('loader-container--dark')
+        : loader_container.classList.remove('loader-container--dark');
 
     document.querySelectorAll('.logo').forEach(elem => {
         let img = elem.querySelector('img');
@@ -19,6 +57,8 @@ function init_darkTheme(first = false) {
         }
         elem.querySelector('img').setAttribute('src', src);
     });
+
+    switchPrism(dark);
 }
 
 function switch2dark() {
