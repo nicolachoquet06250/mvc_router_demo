@@ -136,6 +136,37 @@
 			";
 		}
 		
+		protected function get_service_item(string $class, string $name, string $description = '') {
+			$first_letter = substr(explode('\\', $class)[count(explode('\\', $class)) - 1], 0, 1);
+			if(!$description) $description = 'Aucune description';
+			return <<<HTML
+<li class='mdl-list__item mdl-list__item--three-line'>
+	<div class='mdl-list__item-primary-content'>
+		<span class='mdl-list__item-avatar' style='color: black'>{$first_letter}</span>
+		<span>{$class}</span>
+		<div class='mdl-list__item-text-body'>
+			<table class='mdl-data-table mdl-js-data-table' style='width: 100%'>
+				<thead>
+					<tr>
+						<th>Nom</th>
+						<th>Méthode Injection de dépendences</th>
+						<th>description</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>{$name}</td>
+						<td>get_{$name}()</td>
+						<td>{$description}</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</li>
+HTML;
+		}
+		
 		protected function get_started(): string {
 			$url_generator = $this->inject->get_url_generator();
 			return "
@@ -335,426 +366,20 @@ username@COMPUTER-NAME~{$date} | |= number_of_lines_in_project -> php exe.php te
 			MVC ROUTER met à disposition de base de nombreux services.
 		</p>
 		<ul class='demo-list-three mdl-list'>
-			<li class='mdl-list__item mdl-list__item--three-line'>
-				<div class='mdl-list__item-primary-content'>
-					<span class='mdl-list__item-avatar' style='color: black'>E</span>
-					<span>\mvc_router\services\Error</span>
-					<div class='mdl-list__item-text-body'>
-						<table class='mdl-data-table mdl-js-data-table' style='width: 100%'>
-							<thead>
-								<tr>
-									<th>
-										Nom
-									</th>
-									<th>
-										Méthode Injection de dépendences
-									</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td>
-										service_error
-									</td>
-									<td>
-										get_service_error()
-									</td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
-				</div>
-			</li>
-			<li class='mdl-list__item mdl-list__item--three-line'>
-				<div class='mdl-list__item-primary-content'>
-					<span class='mdl-list__item-avatar' style='color: black'>F</span>
-					<span>\mvc_router\services\FileGeneration</span>
-					<div class='mdl-list__item-text-body'>
-						<table class='mdl-data-table mdl-js-data-table' style='width: 100%'>
-							<thead>
-								<tr>
-									<th>
-										Nom
-									</th>
-									<th>
-										Méthode Injection de dépendences
-									</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td>
-										service_generation
-									</td>
-									<td>
-										get_service_generation()
-									</td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
-				</div>
-			</li>
-			<li class='mdl-list__item mdl-list__item--three-line'>
-				<div class='mdl-list__item-primary-content'>
-					<span class='mdl-list__item-avatar' style='color: black'>F</span>
-					<span>\mvc_router\services\FileSystem</span>
-					<div class='mdl-list__item-text-body'>
-						<table class='mdl-data-table mdl-js-data-table' style='width: 100%'>
-							<thead>
-								<tr>
-									<th>
-										Nom
-									</th>
-									<th>
-										Méthode Injection de dépendences
-									</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td>
-										service_fs
-									</td>
-									<td>
-										get_service_fs()
-									</td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
-				</div>
-			</li>
-			<li class='mdl-list__item mdl-list__item--three-line'>
-				<div class='mdl-list__item-primary-content'>
-					<span class='mdl-list__item-avatar' style='color: black'>J</span>
-					<span>\mvc_router\services\Json</span>
-					<div class='mdl-list__item-text-body'>
-						<table class='mdl-data-table mdl-js-data-table' style='width: 100%'>
-							<thead>
-								<tr>
-									<th>
-										Nom
-									</th>
-									<th>
-										Méthode Injection de dépendences
-									</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td>
-										service_json
-									</td>
-									<td>
-										get_service_json()
-									</td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
-				</div>
-			</li>
-			<li class='mdl-list__item mdl-list__item--three-line'>
-				<div class='mdl-list__item-primary-content'>
-					<span class='mdl-list__item-avatar' style='color: black'>L</span>
-					<span>\mvc_router\services\Lock</span>
-					<div class='mdl-list__item-text-body'>
-						<table class='mdl-data-table mdl-js-data-table' style='width: 100%'>
-							<thead>
-								<tr>
-									<th>
-										Nom
-									</th>
-									<th>
-										Méthode Injection de dépendences
-									</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td>
-										service_lock
-									</td>
-									<td>
-										get_service_lock()
-									</td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
-				</div>
-			</li>
-			<li class='mdl-list__item mdl-list__item--three-line'>
-				<div class='mdl-list__item-primary-content'>
-					<span class='mdl-list__item-avatar' style='color: black'>L</span>
-					<span>\mvc_router\services\Logger</span>
-					<div class='mdl-list__item-text-body'>
-						<table class='mdl-data-table mdl-js-data-table' style='width: 100%'>
-							<thead>
-								<tr>
-									<th>
-										Nom
-									</th>
-									<th>
-										Méthode Injection de dépendences
-									</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td>
-										service_logger
-									</td>
-									<td>
-										get_service_logger()
-									</td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
-				</div>
-			</li>
-			<li class='mdl-list__item mdl-list__item--three-line'>
-				<div class='mdl-list__item-primary-content'>
-					<span class='mdl-list__item-avatar' style='color: black'>R</span>
-					<span>\mvc_router\services\Route</span>
-					<div class='mdl-list__item-text-body'>
-						<table class='mdl-data-table mdl-js-data-table' style='width: 100%'>
-							<thead>
-								<tr>
-									<th>
-										Nom
-									</th>
-									<th>
-										Méthode Injection de dépendences
-									</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td>
-										service_route
-									</td>
-									<td>
-										get_service_route()
-									</td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
-				</div>
-			</li>
-			<li class='mdl-list__item mdl-list__item--three-line'>
-				<div class='mdl-list__item-primary-content'>
-					<span class='mdl-list__item-avatar' style='color: black'>S</span>
-					<span>\mvc_router\services\Session</span>
-					<div class='mdl-list__item-text-body'>
-						<table class='mdl-data-table mdl-js-data-table' style='width: 100%'>
-							<thead>
-								<tr>
-									<th>
-										Nom
-									</th>
-									<th>
-										Méthode Injection de dépendences
-									</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td>
-										service_session
-									</td>
-									<td>
-										get_service_session()
-									</td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
-				</div>
-			</li>
-			<li class='mdl-list__item mdl-list__item--three-line'>
-				<div class='mdl-list__item-primary-content'>
-					<span class='mdl-list__item-avatar' style='color: black'>T</span>
-					<span>\mvc_router\services\Translate</span>
-					<div class='mdl-list__item-text-body'>
-						<table class='mdl-data-table mdl-js-data-table' style='width: 100%'>
-							<thead>
-								<tr>
-									<th>
-										Nom
-									</th>
-									<th>
-										Méthode Injection de dépendences
-									</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td>
-										service_translation
-									</td>
-									<td>
-										get_service_translation()
-									</td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
-				</div>
-			</li>
-			<li class='mdl-list__item mdl-list__item--three-line'>
-				<div class='mdl-list__item-primary-content'>
-					<span class='mdl-list__item-avatar' style='color: black'>T</span>
-					<span>\mvc_router\services\Trigger</span>
-					<div class='mdl-list__item-text-body'>
-						<table class='mdl-data-table mdl-js-data-table' style='width: 100%'>
-							<thead>
-								<tr>
-									<th>
-										Nom
-									</th>
-									<th>
-										Méthode Injection de dépendences
-									</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td>
-										service_trigger
-									</td>
-									<td>
-										get_service_trigger()
-									</td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
-				</div>
-			</li>
-			<li class='mdl-list__item mdl-list__item--three-line'>
-				<div class='mdl-list__item-primary-content'>
-					<span class='mdl-list__item-avatar' style='color: black'>T</span>
-					<span>\mvc_router\services\TriggerRegisterer</span>
-					<div class='mdl-list__item-text-body'>
-						<table class='mdl-data-table mdl-js-data-table' style='width: 100%'>
-							<thead>
-								<tr>
-									<th>
-										Nom
-									</th>
-									<th>
-										Méthode Injection de dépendences
-									</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td>
-										triggers
-									</td>
-									<td>
-										get_triggers()
-									</td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
-				</div>
-			</li>
-			<li class='mdl-list__item mdl-list__item--three-line'>
-				<div class='mdl-list__item-primary-content'>
-					<span class='mdl-list__item-avatar' style='color: black'>U</span>
-					<span>\mvc_router\services\UrlGenerator</span>
-					<div class='mdl-list__item-text-body'>
-						<table class='mdl-data-table mdl-js-data-table' style='width: 100%'>
-							<thead>
-								<tr>
-									<th>
-										Nom
-									</th>
-									<th>
-										Méthode Injection de dépendences
-									</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td>
-										url_generator
-									</td>
-									<td>
-										get_url_generator()
-									</td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
-				</div>
-			</li>
-			<li class='mdl-list__item mdl-list__item--three-line'>
-				<div class='mdl-list__item-primary-content'>
-					<span class='mdl-list__item-avatar' style='color: black'>W</span>
-					<span>\mvc_router\services\Websocket</span>
-					<div class='mdl-list__item-text-body'>
-						<table class='mdl-data-table mdl-js-data-table' style='width: 100%'>
-							<thead>
-								<tr>
-									<th>
-										Nom
-									</th>
-									<th>
-										Méthode Injection de dépendences
-									</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td>
-										service_websocket
-									</td>
-									<td>
-										get_service_websocket()
-									</td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
-				</div>
-			</li>
-			<li class='mdl-list__item mdl-list__item--three-line'>
-				<div class='mdl-list__item-primary-content'>
-					<span class='mdl-list__item-avatar' style='color: black'>Y</span>
-					<span>\mvc_router\services\Yaml</span>
-					<div class='mdl-list__item-text-body'>
-						<table class='mdl-data-table mdl-js-data-table' style='width: 100%'>
-							<thead>
-								<tr>
-									<th>
-										Nom
-									</th>
-									<th>
-										Méthode Injection de dépendences
-									</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td>
-										service_yaml
-									</td>
-									<td>
-										get_service_yaml()
-									</td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
-				</div>
-			</li>
+			{$this->get_service_item('\mvc_router\services\Error', 'service_error', 'Gère les erreurs HTTP en donnant des pages personnalisés')}
+			{$this->get_service_item('\mvc_router\services\FileGeneration', 'service_generation', 'Permet de regénérer les fichiers non versionnés à leur version d\'origine si vous l\'avez modifié')}
+			{$this->get_service_item('\mvc_router\services\FileSystem', 'service_fs', 'Comptient des fonctions pour pouvoir parcourir le système de fichier de votre système d\'exploitation')}
+			{$this->get_service_item('\mvc_router\services\Json', 'service_json', 'Permet d\'encoder ou décoder un contenu JSON')}
+			{$this->get_service_item('\mvc_router\services\Lock', 'service_lock', 'permet de bloquer l\'écriture d\'un fichier ou d\'un répertoire jusqu\'à ce qu\'il soit débloqué.<br />Ce service peux servire pour l\'utilisation de Queues par example')}
+			{$this->get_service_item('\mvc_router\services\Logger', 'service_logger')}
+			{$this->get_service_item('\mvc_router\services\Route', 'service_route')}
+			{$this->get_service_item('\mvc_router\services\Session', 'service_session')}
+			{$this->get_service_item('\mvc_router\services\Translate', 'service_translation', 'Gère le système de traduction')}
+			{$this->get_service_item('\mvc_router\services\Trigger', 'service_trigger')}
+			{$this->get_service_item('\mvc_router\services\TriggerRegisterer', 'triggers', 'Crée et lance les triggers')}
+			{$this->get_service_item('\mvc_router\services\UrlGenerator', 'url_generator', 'Génère des urls en fonctions des routes configurés dans les controlleurs<br /> et du chemins des fichiers statics')}
+			{$this->get_service_item('\mvc_router\services\Websocket', 'service_websocket', 'Permet de créer plusieurs routes pour votre serveur de websockets')}
+			{$this->get_service_item('\mvc_router\services\Yaml', 'service_yaml', 'Parseur Yaml')}
 		</ul>
 	</div>
 </div>
