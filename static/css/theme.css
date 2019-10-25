@@ -113,6 +113,30 @@ tr.hiddable th.hide > div {
     overflow-x: auto;
 }
 
+.mdl-card {
+    width: 100%;
+    text-align: left;
+}
+
+.mdl-card > .mdl-card__title {
+    color: #fff;
+    height: 250px;
+    background: url('/static/images/service.png') center / cover;
+}
+
+.mdl-card > .mdl-card__supporting-text {
+    padding-right: 15px;
+}
+
+.mdl-cell--phone-table .mdl-data-table, .mdl-cell--desktop-table .mdl-data-table {
+    white-space: unset;
+}
+
+.mdl-cell--phone-table .mdl-data-table, .mdl-cell--tablet-table .mdl-data-table {
+    box-sizing: content-box;
+    width: 100%;
+}
+
     /* -- DARK THEME -- */
 
 .theme--dark, .theme--dark .mdl-layout__drawer,
@@ -180,4 +204,22 @@ tr.hiddable th.hide > div {
 
 .theme--dark .mdl-list .mdl-list__item .mdl-list__item-primary-content .mdl-list__item-avatar {
     color: #eeeeee!important;
+}
+
+.theme--dark .mdl-card {
+    background: black;
+    color: #eeeeee;
+    border: 1px solid #673AB7;
+}
+
+.theme--dark .mdl-card > .mdl-card__supporting-text {
+    color: #eeeeee;
+}
+
+.theme--dark .mdl-card .mdl-button {
+    color: #eeeeee;
+}
+
+.theme--dark .mdl-card .mdl-card--border {
+    border-top-color: #673AB7;
 }

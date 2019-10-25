@@ -144,31 +144,94 @@
 	<div class='mdl-list__item-primary-content'>
 		<span class='mdl-list__item-avatar' style='color: black'>{$first_letter}</span>
 		<span>{$class}</span>
-		<div class='mdl-list__item-text-body'>
-			<table class='mdl-data-table mdl-js-data-table' style='width: 100%'>
-				<thead>
-					<tr>
-						<th>Nom</th>
-						<th>Méthode Injection de dépendences</th>
-						<th>description</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						<td>{$name}</td>
-						<td>get_{$name}()</td>
-						<td>{$description}</td>
-					</tr>
-				</tbody>
-			</table>
+		<div class='mdl-list__item-text-body mdl-grid'>
+			<div class='mdl-cell mdl-cell--12-col-desktop mdl-cell--hide-phone mdl-cell--hide-tablet mdl-cell--desktop-table'>
+				<table class='mdl-data-table mdl-js-data-table' style='width: 100%'>
+					<thead>
+						<tr>
+							<th>Nom</th>
+							<th>Méthode Injection de dépendences</th>
+							<th>description</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>{$name}</td>
+							<td>get_{$name}()</td>
+							<td>{$description}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class='mdl-cell mdl-cell--8-col-tablet mdl-cell--hide-phone mdl-cell--hide-desktop mdl-cell--tablet-table'>
+				<table class='mdl-data-table mdl-js-data-table'>
+					<thead>
+						<tr>
+							<th>Nom</th>
+							<th>Méthode Injection de dépendences</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>{$name}</td>
+							<td>get_{$name}()</td>
+						</tr>
+					</tbody>
+					<thead>
+						<tr>
+							<th colspan="2">Description</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td colspan="2" style='word-wrap: break-word; overflow-wrap: break-word;'>{$description}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class='mdl-cell mdl-cell--4-col-phone mdl-cell--hide-desktop mdl-cell--hide-tablet mdl-cell--phone-table'>
+				<table class='mdl-data-table mdl-js-data-table'>
+					<thead>
+						<tr>
+							<th>Nom</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>{$name}</td>
+						</tr>
+					</tbody>
+					<thead>
+						<tr>
+							<th>Méthode Injection de dépendences</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>get_{$name}()</td>
+						</tr>
+					</tbody>
+					<thead>
+						<tr>
+							<th>Description</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td style='word-wrap: break-word; overflow-wrap: break-word;'>{$description}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
 		</div>
 	</div>
 </li>
 HTML;
 		}
 		
-		protected function get_code_highlighted($language, $code) {
-			return "<pre><code class='language-{$language}'>{$code}</code></pre>";
+		protected function get_code_highlighted($language, $code, $lines = false) {
+			$lines = $lines ? 'line-numbers' : '';
+			return "<pre><code class='language-{$language} {$lines}'>{$code}</code></pre>";
 		}
 		
 		protected function get_started(): string {
@@ -362,6 +425,16 @@ username@COMPUTER-NAME~{$date} | |= number_of_lines_in_project -> php exe.php te
 			";
 		}
 		
+		protected function top_button() {
+			return "
+	<a href='#top' style='color: unset'>
+		<button class='mdl-button mdl-js-button mdl-button--icon'>
+			<i class='material-icons'>keyboard_arrow_up</i>
+		</button>
+	</a>
+";
+		}
+		
 		protected function services(): string {
 			$list = [];
 			$services = $this->inject->get_services();
@@ -377,10 +450,335 @@ username@COMPUTER-NAME~{$date} | |= number_of_lines_in_project -> php exe.php te
 			}
 			$list = implode("\n", $list);
 			return <<<HTML
-<div class='mdl-grid'>
+<div class='mdl-grid' id='top'>
 	<div class='mdl-cell mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone'>
-		<p>MVC ROUTER met à disposition de base de nombreux services.</p>
-		<ul class='demo-list-three mdl-list'>{$list}</ul>
+		<div class='mdl-grid'>
+			<div class='mdl-cell mdl-cell--3-col-desktop mdl-cell--hide-tablet mdl-cell--hide-phone'></div>
+			<div class='mdl-cell mdl-cell--6-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone'>
+				<div class='mdl-card mdl-shadow--2dp'>
+					<div class='mdl-card__title'>
+						<h2 class='mdl-card__title-text'>Services</h2>
+					</div>
+					<div class='mdl-card__supporting-text'>
+						MVC ROUTER met à disposition de base de nombreux services.<br />
+						Voici tous les services livés dans le core du framework.
+					</div>
+					<div class="mdl-card__actions mdl-card--border">
+						<a  href='#service_list'
+							class='mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect'>
+							Liste des services
+						</a>
+						<a  href='#use_service'
+							class='mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect'>
+							Comment les utiliser
+						</a>
+						<a  href='#create_service'
+							class='mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect'>
+							Comment en créer
+						</a>
+						<a  href='#customize_service'
+							class='mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect'>
+							Comment les customiser
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class='mdl-grid'>
+			<section class='mdl-cell mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone' id='service_list'>
+				<h3>Liste des services {$this->top_button()}</h3>
+				<ul class='mdl-list'>{$list}</ul>
+			</section>
+			<section class='mdl-cell mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone' id='use_service'>
+				<h3>Comment utiliser un service {$this->top_button()}</h3>
+				<div class='mdl-grid'>
+					<div class='mdl-cell mdl-cell--6-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone'>
+						Pour utiliser un service, MVC ROUTER prend en charge deux manières de faire :
+						<ul>
+							<li style='list-style: none'>
+								Par injection de dépendence:
+								<ul>
+									<li style='list-style: none'>
+										Par paramètres
+									</li>
+									<li style='list-style: none'>
+										Par propriétés
+									</li>
+								</ul>
+							</li>
+							<li style='list-style: none'>
+								En utilisant la propriété <code>inject</code> de type DependencyWrapper et qui utilise donc le getter généré en fonction du nom donné dans le fichier <code>dependencies.yaml</code>
+							</li>
+						</ul>
+					</div>
+					<div class='mdl-cell mdl-cell--6-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone'>
+						{$this->get_code_highlighted('php', '&lt;?php
+	namespace mvc_router\mvc\controllers;
+	
+	use mvc_router\mvc\Controller;
+	
+	class MonController extends Controller {
+		/**
+		 * @var \mvc_router\services\Json $json_parser
+		 */
+		public $json_parser;
+	
+		public function ma_method(\mvc_router\services\Translate $translation) {
+			$logger = $this->inject->get_logger_service();
+			return $this->json_parser->encode([
+				\'translation\' => $translation->__(\'ma phrase traduite\'),
+			]);
+		}
+	}
+
+', true)}
+					</div>
+				</div>
+			</section>
+			<section class='mdl-cell mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone' id='create_service'>
+				<h3>Comment créer un service {$this->top_button()}</h3>
+				<p>Deux façons s'offrent à vous :</p>
+				<ul>
+					<li>Soit à la main :</li>
+				</ul>
+				<div class='mdl-grid'>
+					<div class='mdl-cell mdl-cell--6-col-desktop mdl-cell--4-col-tablet mdl-cell--4-col-phone'>
+						Ouvrez un terminal puis tapez
+						{$this->get_code_highlighted('shell', 'cd [project-custom-dir]
+mkdir classes
+cd classes
+mkdir services
+touch MonService.php
+
+
+
+
+
+')}
+					</div>
+					<div class='mdl-cell mdl-cell--6-col-desktop mdl-cell--4-col-tablet mdl-cell--4-col-phone'>
+						Ouvrez le fichier <code>[project-custom-dir]/classes/services/MonService.php dans votre IDE préféré</code>
+						{$this->get_code_highlighted('php', '&lt;?php
+	namespace my\service\namespace;
+	
+	use \mvc_router\services;
+	
+	class MonService extends Service {
+		public function hello_world(): string {
+			return "Hello World";
+		}
+	}
+', true)}
+					</div>
+					<div class='mdl-cell mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone'>
+						Créez un fichier <code>[project-custom-dir]/dependencies.yaml</code>
+						{$this->get_code_highlighted('yaml', 'add:
+    services:
+		\my\service\namespace\MonService:
+			name: mon_service
+			file: __DIR__/classes/services/MonService.php
+', true)}
+					</div>
+					<div class='mdl-cell mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone'>
+						Reprenez votre terminal et tapez <code>php exe.php install:update</code>
+						{$this->get_code_highlighted('shell', (function() {
+							$date = date('Y-m-d:H:i:s');
+							return "php exe.php install:update
+
+username@COMPUTER-NAME~{$date} | command: git pull
+username@COMPUTER-NAME~{$date} | Already up to date.
+username@COMPUTER-NAME~{$date} | ---------------------------------------------------------------------------
+username@COMPUTER-NAME~{$date} | command: git -C C:\\Users\\nicol\\PhpstormProjects\\mvc_router\\demo pull
+username@COMPUTER-NAME~{$date} | Already up to date.
+username@COMPUTER-NAME~{$date} | ---------------------------------------------------------------------------
+username@COMPUTER-NAME~{$date} | command: composer update
+Loading composer repositories with package information
+Updating dependencies (including require-dev)
+Nothing to install or update
+Generating autoload files
+username@COMPUTER-NAME~{$date} | ---------------------------------------------------------------------------
+username@COMPUTER-NAME~{$date} | command: generate:dependencies -p custom-file=C:\\Users\\nicol\\PhpstormProjects\\mvc_router\\demo/update_dependencies.php
+username@COMPUTER-NAME~{$date} | DependencyWrapper.php and ConfWrapper.php has been generated !
+username@COMPUTER-NAME~{$date} | ---------------------------------------------------------------------------
+username@COMPUTER-NAME~{$date} | command: generate:base_files -p custom-dir=C:\\Users\\nicol\\PhpstormProjects\\mvc_router\\demo
+username@COMPUTER-NAME~{$date} | All default files has been generated ! Don't forget to fill the classes/confs/mysql.json file
+username@COMPUTER-NAME~{$date} | ---------------------------------------------------------------------------
+username@COMPUTER-NAME~{$date} | command: generate:translations
+username@COMPUTER-NAME~{$date} | Les langues fr-FR, en-GB, en-US ont bien été générés
+username@COMPUTER-NAME~{$date} | ---------------------------------------------------------------------------
+username@COMPUTER-NAME~{$date} | command: install:databases
+username@COMPUTER-NAME~{$date} | user => true
+username@COMPUTER-NAME~{$date} | role => true
+username@COMPUTER-NAME~{$date} | ---------------------------------------------------------------------------
+
+";
+						})())}
+					</div>
+				</div>
+				<ul>
+					<li>Soit avec l'utilitaire CLI :</li>
+				</ul>
+				<div class='mdl-grid'>
+					<div class='mdl-cell mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone'>
+						Ouvrez un terminal et tapez <code>php exe.php generate:service -p name=[service-name] site=[custom-dir-name] is_singleton=[true|false]</code>
+						{$this->get_code_highlighted('shell', (function() {
+							$date = date('Y-m-d:H:i:s');
+							return "php exe.php generate:service -p name=hello_world site=demo is_singleton=true
+
+username@COMPUTER-NAME~{$date} | command: git pull
+username@COMPUTER-NAME~{$date} | Already up to date.
+username@COMPUTER-NAME~{$date} | ---------------------------------------------------------------------------
+username@COMPUTER-NAME~{$date} | command: git -C C:\Users\\nicol\PhpstormProjects\mvc_router\demo pull
+username@COMPUTER-NAME~{$date} | Already up to date.
+username@COMPUTER-NAME~{$date} | ---------------------------------------------------------------------------
+username@COMPUTER-NAME~{$date} | command: composer update
+Loading composer repositories with package information
+Updating dependencies (including require-dev)
+Nothing to install or update
+Generating autoload files
+username@COMPUTER-NAME~{$date} | ---------------------------------------------------------------------------
+username@COMPUTER-NAME~{$date} | command: generate:dependencies -p custom-file=C:\Users\\nicol\PhpstormProjects\mvc_router\demo/update_dependencies.php
+username@COMPUTER-NAME~{$date} | DependencyWrapper.php and ConfWrapper.php has been generated !
+username@COMPUTER-NAME~{$date} | ---------------------------------------------------------------------------
+username@COMPUTER-NAME~{$date} | command: generate:base_files -p custom-dir=C:\Users\\nicol\PhpstormProjects\mvc_router\demo
+username@COMPUTER-NAME~{$date} | All default files has been generated ! Don't forget to fill the classes/confs/mysql.json file
+username@COMPUTER-NAME~{$date} | ---------------------------------------------------------------------------
+username@COMPUTER-NAME~{$date} | command: generate:translations
+username@COMPUTER-NAME~{$date} | Les langues fr-FR, en-GB, en-US ont bien été générés
+username@COMPUTER-NAME~{$date} | ---------------------------------------------------------------------------
+username@COMPUTER-NAME~{$date} | command: install:databases
+username@COMPUTER-NAME~{$date} | user => true
+username@COMPUTER-NAME~{$date} | role => true
+username@COMPUTER-NAME~{$date} | ---------------------------------------------------------------------------
+username@COMPUTER-NAME~{$date} | Le service hello_world à été généré et intégré dans dependencies.yaml avec succès !";
+						})())}
+					</div>
+				</div>
+			</section>
+			<section class='mdl-cell mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone' id='customize_service'>
+				<h3>Comment customiser un service {$this->top_button()}</h3>
+				<p>Idem, deux façons s'offrent à vous :</p>
+				<ul>
+					<li>Soit à la main :</li>
+				</ul>
+				<div class='mdl-grid'>
+					<div class='mdl-cell mdl-cell--6-col-desktop mdl-cell--4-col-tablet mdl-cell--4-col-phone'>
+						Ouvrez un terminal puis tapez
+						{$this->get_code_highlighted('shell', 'cd [project-custom-dir]
+mkdir classes
+cd classes
+mkdir services
+touch MonService.php
+
+
+
+
+
+')}
+					</div>
+					<div class='mdl-cell mdl-cell--6-col-desktop mdl-cell--4-col-tablet mdl-cell--4-col-phone'>
+						Ouvrez le fichier <code>[project-custom-dir]/classes/services/MonService.php dans votre IDE préféré</code>
+						{$this->get_code_highlighted('php', '&lt;?php
+	namespace my\service\namespace;
+	
+	use \mvc_router\services;
+	
+	class MonService extends \mvc_router\services\MonService {
+		public function hello_world(): string {
+			return "Hello World";
+		}
+	}
+', true)}
+					</div>
+					<div class='mdl-cell mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone'>
+						Créez ou ouvrez le fichier <code>[project-custom-dir]/dependencies.yaml</code>
+						{$this->get_code_highlighted('yaml', 'extends:
+    services:
+		\my\service\namespace\MonService:
+			class:
+				old: \mvc_router\services\MonService
+				new: \my\service\namespace\MonService
+			name: mon_service
+			file: __DIR__/classes/services/MonService.php
+', true)}
+					</div>
+					<div class='mdl-cell mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone'>
+						Reprenez votre terminal et tapez <code>php exe.php install:update</code>
+						{$this->get_code_highlighted('shell', (function() {
+				$date = date('Y-m-d:H:i:s');
+				return "php exe.php install:update
+
+username@COMPUTER-NAME~{$date} | command: git pull
+username@COMPUTER-NAME~{$date} | Already up to date.
+username@COMPUTER-NAME~{$date} | ---------------------------------------------------------------------------
+username@COMPUTER-NAME~{$date} | command: git -C C:\\Users\\nicol\\PhpstormProjects\\mvc_router\\demo pull
+username@COMPUTER-NAME~{$date} | Already up to date.
+username@COMPUTER-NAME~{$date} | ---------------------------------------------------------------------------
+username@COMPUTER-NAME~{$date} | command: composer update
+Loading composer repositories with package information
+Updating dependencies (including require-dev)
+Nothing to install or update
+Generating autoload files
+username@COMPUTER-NAME~{$date} | ---------------------------------------------------------------------------
+username@COMPUTER-NAME~{$date} | command: generate:dependencies -p custom-file=C:\\Users\\nicol\\PhpstormProjects\\mvc_router\\demo/update_dependencies.php
+username@COMPUTER-NAME~{$date} | DependencyWrapper.php and ConfWrapper.php has been generated !
+username@COMPUTER-NAME~{$date} | ---------------------------------------------------------------------------
+username@COMPUTER-NAME~{$date} | command: generate:base_files -p custom-dir=C:\\Users\\nicol\\PhpstormProjects\\mvc_router\\demo
+username@COMPUTER-NAME~{$date} | All default files has been generated ! Don't forget to fill the classes/confs/mysql.json file
+username@COMPUTER-NAME~{$date} | ---------------------------------------------------------------------------
+username@COMPUTER-NAME~{$date} | command: generate:translations
+username@COMPUTER-NAME~{$date} | Les langues fr-FR, en-GB, en-US ont bien été générés
+username@COMPUTER-NAME~{$date} | ---------------------------------------------------------------------------
+username@COMPUTER-NAME~{$date} | command: install:databases
+username@COMPUTER-NAME~{$date} | user => true
+username@COMPUTER-NAME~{$date} | role => true
+username@COMPUTER-NAME~{$date} | ---------------------------------------------------------------------------
+
+";
+			})())}
+					</div>
+				</div>
+				<ul>
+					<li>Soit avec l'utilitaire CLI :</li>
+				</ul>
+				<div class='mdl-grid'>
+					<div class='mdl-cell mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone'>
+						Ouvrez un terminal et tapez <code>php exe.php generate:customized_service -p name=[service-name] site=[custom-dir-name] is_singleton=[true|false]</code>
+						{$this->get_code_highlighted('shell', (function() {
+				$date = date('Y-m-d:H:i:s');
+				return "php exe.php generate:customized_service -p name=mon_service site=demo is_singleton=true
+
+username@COMPUTER-NAME~{$date} | command: git pull
+username@COMPUTER-NAME~{$date} | Already up to date.
+username@COMPUTER-NAME~{$date} | ---------------------------------------------------------------------------
+username@COMPUTER-NAME~{$date} | command: git -C C:\Users\\nicol\PhpstormProjects\mvc_router\demo pull
+username@COMPUTER-NAME~{$date} | Already up to date.
+username@COMPUTER-NAME~{$date} | ---------------------------------------------------------------------------
+username@COMPUTER-NAME~{$date} | command: composer update
+Loading composer repositories with package information
+Updating dependencies (including require-dev)
+Nothing to install or update
+Generating autoload files
+username@COMPUTER-NAME~{$date} | ---------------------------------------------------------------------------
+username@COMPUTER-NAME~{$date} | command: generate:dependencies -p custom-file=C:\Users\\nicol\PhpstormProjects\mvc_router\demo/update_dependencies.php
+username@COMPUTER-NAME~{$date} | DependencyWrapper.php and ConfWrapper.php has been generated !
+username@COMPUTER-NAME~{$date} | ---------------------------------------------------------------------------
+username@COMPUTER-NAME~{$date} | command: generate:base_files -p custom-dir=C:\Users\\nicol\PhpstormProjects\mvc_router\demo
+username@COMPUTER-NAME~{$date} | All default files has been generated ! Don't forget to fill the classes/confs/mysql.json file
+username@COMPUTER-NAME~{$date} | ---------------------------------------------------------------------------
+username@COMPUTER-NAME~{$date} | command: generate:translations
+username@COMPUTER-NAME~{$date} | Les langues fr-FR, en-GB, en-US ont bien été générés
+username@COMPUTER-NAME~{$date} | ---------------------------------------------------------------------------
+username@COMPUTER-NAME~{$date} | command: install:databases
+username@COMPUTER-NAME~{$date} | user => true
+username@COMPUTER-NAME~{$date} | role => true
+username@COMPUTER-NAME~{$date} | ---------------------------------------------------------------------------
+username@COMPUTER-NAME~{$date} | Le service mon_service à été généré en extension du service de base et intégré dans dependencies.yaml avec succès !";
+			})())}
+					</div>
+				</div>
+			</section>
+		</div>
 	</div>
 </div>
 HTML;
