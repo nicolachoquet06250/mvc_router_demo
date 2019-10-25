@@ -787,11 +787,99 @@ HTML;
 		protected function controllers(): string {
 			return "<div class='mdl-grid'>
 						<div class='mdl-cell mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone'>
-							<h3>Controlleurs</h3>
-							<ul>
-								<li>Viserys</li>
-								<li>Daenerys</li>
-							</ul>
+							<div class='mdl-grid'>
+								<div class='mdl-cell mdl-cell--3-col-desktop mdl-cell--hide-tablet mdl-cell--hide-phone'></div>
+								<div class='mdl-cell mdl-cell--6-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone'>
+									<div class='mdl-card mdl-shadow--2dp'>
+										<div class='mdl-card__title'>
+											<h2 class='mdl-card__title-text'>Controlleurs</h2>
+										</div>
+										<div class='mdl-card__supporting-text'>
+											Les controlleurs de MVC ROUTER sont assez simple d'utilisation.<br />
+											Ils intègrent l'injection de dépendence, et un système de routage grâce à la PHPDoc.
+										</div>
+										<div class='mdl-card__actions mdl-card--border'>
+											<a  class='mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect'>Button</a>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class='mdl-grid'>
+								<section class='mdl-cell mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone'>
+									<h3>Créer un controlleur {$this->top_button()}</h3>
+									<div class='mdl-grid'>
+										<div class='mdl-cell mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone'>
+											Par exemple
+											{$this->get_code_highlighted('php', '&lt;?php
+	namespace mvc_router\mvc;
+	
+	use Exception;
+	use mvc_router\data\gesture\custom\managers\User;
+	use mvc_router\router\Router;
+	use mvc_router\services\FileSystem;
+	use mvc_router\services\Route;
+	use mvc_router\services\UrlGenerator;
+	
+	class Routes extends Controller {
+	
+		/** @var \mvc_router\services\Translate $translation */
+		public $translation;
+	
+		/**
+		 * @route \/routes\/?(?&lt;stats&gt;stats)?
+		 * @param views\Route $route_view
+		 * @param Router      $router
+		 * @param Route       $service_route
+		 * @return views\Route
+		 */
+		public function index(views\Route $route_view, Router $router, Route $service_route) {
+			$route_view->assign(\'service_route\', $service_route);
+			$route_view->assign(\'router\', $router);
+			$route_view->assign(\'stats\', $this->param(\'stats\') !== null);
+	
+			if($lang = $router->get(\'lang\')) $this->translation->set_default_language($lang);
+	
+			$route_view->assign(\'lang\', $this->translation->get_default_language());
+	
+			return $route_view;
+		}
+	
+		/**
+		 * @route /routes/url_generator
+		 * @param UrlGenerator $urlGenerator
+		 * @param FileSystem   $fileSystem
+		 * @return false|string
+		 * @throws Exception
+		 */
+		public function url_generator(UrlGenerator $urlGenerator, FileSystem $fileSystem) {
+			$before_links = \'\';
+			$link_with_stats = \'&lt;a href="\'.$urlGenerator->get_url_from_ctrl_and_method($this, \'index\', \'stats\').\'"&gt;
+		Aller aux routes avec stats
+	&lt;/a&gt;\';
+			$link_without_stats = \'&lt;a href="\'.$urlGenerator->get_url_from_ctrl_and_method($this, \'index\').\'"&gt;
+		Aller aux routes sans stats
+	&lt;/a&gt;\';
+			$link_refresh = \'&lt;a href="\'.$urlGenerator->get_url_from_ctrl_and_method($this, \'url_generator\').\'"&gt;
+		Rafraichir
+	&lt;/a&gt;\';
+			return $before_links.\'&lt;br&gt;\'.$link_with_stats.\'&lt;br&gt;\'.$link_without_stats.\'&lt;br&gt;\'.$link_refresh;
+		}
+		
+		/**
+		 * @param User $user_manager
+		 * @return false|string
+		 */
+		public function test_managers(User $user_manager) {
+			$users = $user_manager->get_all_from_id(1);
+			return $this->var_dump($users);
+		}
+	}
+					
+					', true)}
+										</div>
+									</div>
+								</section>
+							</div>
 						</div>
 					</div>";
 		}
