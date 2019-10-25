@@ -167,6 +167,10 @@
 HTML;
 		}
 		
+		protected function get_code_highlighted($language, $code) {
+			return "<pre><code class='language-{$language}'>{$code}</code></pre>";
+		}
+		
 		protected function get_started(): string {
 			$url_generator = $this->inject->get_url_generator();
 			return "
@@ -184,11 +188,11 @@ HTML;
 													<div class='mdl-list__item-text-body'>
 														<section>
 															<h5>Linux Debian</h5>
-															<code><pre class='language-shell'>sudo apt-get install git</pre></code>
+															{$this->get_code_highlighted('shell', 'sudo apt install git')}
 														</section>
 														<section>
 															<h5>Linux Fedora</h5>
-															<code><pre class='language-shell'>dfn install git</pre></code>
+															{$this->get_code_highlighted('shell', 'dfn install git')}
 														</section>
 														<section>
 															<h5>Windows</h5>
@@ -214,11 +218,11 @@ HTML;
 													<div class='mdl-list__item-text-body'>
 														<section>
 															<h5>Linux Debian</h5>
-															<code><pre class='language-shell'>sudo apt-get install mysql</pre></code>
+															{$this->get_code_highlighted('shell', 'sudo apt install mysql')}
 														</section>
 														<section>
 															<h5>Linux Fedora</h5>
-															<code><pre class='language-shell'>dfn install mysql</pre></code>
+															{$this->get_code_highlighted('shell', 'dfn install mysql')}
 														</section>
 														<section>
 															<h5>Windows</h5>
@@ -243,11 +247,11 @@ HTML;
 													<div class='mdl-list__item-text-body'>
 														<section>
 															<h5>Linux Debian</h5>
-															<pre><code class='language-shell'>sudo apt install php7.X php7.X-dev php7.X-curl php7.X-mysql php7.X-common php7.X-cli php7.X-cgi php7.X-json php7.X-readline composer</code></pre>
+															{$this->get_code_highlighted('shell', 'sudo apt install php7.X php7.X-dev php7.X-curl php7.X-mysql php7.X-common php7.X-cli php7.X-cgi php7.X-json php7.X-readline composer')}
 														</section>
 														<section>
 															<h5>Linux Fedora</h5>
-															<pre><code class='language-shell'>dfn install php7.X php7.X-dev php7.X-curl php7.X-mysql php7.X-common php7.X-cli php7.X-cgi php7.X-json php7.X-readline composer</code></pre>
+															{$this->get_code_highlighted('shell', 'dfn install php7.X php7.X-dev php7.X-curl php7.X-mysql php7.X-common php7.X-cli php7.X-cgi php7.X-json php7.X-readline composer')}
 														</section>
 														<section>
 															<h5>Windows</h5>
@@ -257,7 +261,7 @@ HTML;
 														</section>
 														<section>
 															<h5>Mac OSX</h5>
-															<pre><code class='language-shell'>curl -s http://php-osx.liip.ch/install.sh | bash -s 7.3
+															{$this->get_code_highlighted('shell', 'curl -s http://php-osx.liip.ch/install.sh | bash -s 7.3
 export PATH=/usr/local/php7.3/bin:\$PATH
 php -v
 
@@ -265,7 +269,7 @@ PHP 7.3.11 (cli) (built: Feb	1 2018 13:23:34) ( NTS )
 Copyright (c) 1997-2018 The PHP Group
 Zend Engine v3.2.0, Copyright (c) 1998-2018 Zend Technologies
 		with Zend OPcache v7.2.2, Copyright (c) 1999-2018, by Zend Technologies
-		with Xdebug v2.6.0, Copyright (c) 2002-2018, by Derick Rethans</code></pre>
+		with Xdebug v2.6.0, Copyright (c) 2002-2018, by Derick Rethans')}
 														</section>
 													</div>
 												</span>
@@ -304,12 +308,12 @@ Zend Engine v3.2.0, Copyright (c) 1998-2018 Zend Technologies
 								</p>
 								<p>
 									Allez sur la plateforme GIT de votre choix ( Github, GitLab, une plateforme interne, ou autre ) puis créez un dépôt pour y mettre le code qui customisera votre projet.
-									<pre><code class='language-shell'>cd [dir-name]
-php exe.php install:install -p repo=[custom-git-repo] dir=[repo-dir-name]</code></pre>
+									{$this->get_code_highlighted('shell', 'cd [dir-name]
+php exe.php install:install -p repo=[custom-git-repo] dir=[repo-dir-name]')}
 								</p>
 								<p>
 									Si vous voulez faire une mise à jour de votre code, des bases de données ou installer de nouveaux packages composer lancez la commande suivante
-									<pre><code class='language-shell'>php exe.php install:update</code></pre>
+									{$this->get_code_highlighted('shell', 'php exe.php install:update')}
 								</p>
 								<p>
 									<a href='{$url_generator->get_url_from_ctrl_and_method($this->inject->get_doc_controller(), 'commands')}'>
@@ -326,7 +330,7 @@ php exe.php install:install -p repo=[custom-git-repo] dir=[repo-dir-name]</code>
 										</p>
 										<p>
 											Pour voir les commandes à disposition, leurs syntaxes et leurs paramètres, allez dans un terminal et tapez <code>php exe.php --help</code>
-											<pre><code class='language-shell'>php exe.php --help
+											{$this->get_code_highlighted('shell', "php exe.php --help
 											
 username@COMPUTER-NAME~{$date} | |=========================| clone |=========================|
 username@COMPUTER-NAME~{$date} | |= repo -> php exe.php clone:repo
@@ -349,7 +353,7 @@ username@COMPUTER-NAME~{$date} | |= server -> php exe.php start:server -p [port=
 username@COMPUTER-NAME~{$date} | |=========================| test |=========================|
 username@COMPUTER-NAME~{$date} | |= helper_is_cli -> php exe.php test:helper_is_cli
 username@COMPUTER-NAME~{$date} | |= mysql -> php exe.php test:mysql
-username@COMPUTER-NAME~{$date} | |= number_of_lines_in_project -> php exe.php test:number_of_lines_in_project</code></pre>
+username@COMPUTER-NAME~{$date} | |= number_of_lines_in_project -> php exe.php test:number_of_lines_in_project")}
 										</p>";
 							})}
 					</table>
@@ -359,28 +363,24 @@ username@COMPUTER-NAME~{$date} | |= number_of_lines_in_project -> php exe.php te
 		}
 		
 		protected function services(): string {
+			$list = [];
+			$services = $this->inject->get_services();
+			ksort($services);
+			foreach( $services as $service_class => $service ) {
+				$description = isset($this->inject->get_phpdoc_parser()->get_class_doc($service_class)['description'])
+					? str_replace("\n", '<br />', trim($this->inject->get_phpdoc_parser()->get_class_doc($service_class)['description'])) : '';
+				$list[] = $this->get_service_item(
+					$service_class,
+					$service['name'],
+					$description
+				);
+			}
+			$list = implode("\n", $list);
 			return <<<HTML
 <div class='mdl-grid'>
 	<div class='mdl-cell mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone'>
-		<p>
-			MVC ROUTER met à disposition de base de nombreux services.
-		</p>
-		<ul class='demo-list-three mdl-list'>
-			{$this->get_service_item('\mvc_router\services\Error', 'service_error', 'Gère les erreurs HTTP en donnant des pages personnalisés')}
-			{$this->get_service_item('\mvc_router\services\FileGeneration', 'service_generation', 'Permet de regénérer les fichiers non versionnés à leur version d\'origine si vous l\'avez modifié')}
-			{$this->get_service_item('\mvc_router\services\FileSystem', 'service_fs', 'Comptient des fonctions pour pouvoir parcourir le système de fichier de votre système d\'exploitation')}
-			{$this->get_service_item('\mvc_router\services\Json', 'service_json', 'Permet d\'encoder ou décoder un contenu JSON')}
-			{$this->get_service_item('\mvc_router\services\Lock', 'service_lock', 'permet de bloquer l\'écriture d\'un fichier ou d\'un répertoire jusqu\'à ce qu\'il soit débloqué.<br />Ce service peux servire pour l\'utilisation de Queues par example')}
-			{$this->get_service_item('\mvc_router\services\Logger', 'service_logger')}
-			{$this->get_service_item('\mvc_router\services\Route', 'service_route')}
-			{$this->get_service_item('\mvc_router\services\Session', 'service_session')}
-			{$this->get_service_item('\mvc_router\services\Translate', 'service_translation', 'Gère le système de traduction')}
-			{$this->get_service_item('\mvc_router\services\Trigger', 'service_trigger')}
-			{$this->get_service_item('\mvc_router\services\TriggerRegisterer', 'triggers', 'Crée et lance les triggers')}
-			{$this->get_service_item('\mvc_router\services\UrlGenerator', 'url_generator', 'Génère des urls en fonctions des routes configurés dans les controlleurs<br /> et du chemins des fichiers statics')}
-			{$this->get_service_item('\mvc_router\services\Websocket', 'service_websocket', 'Permet de créer plusieurs routes pour votre serveur de websockets')}
-			{$this->get_service_item('\mvc_router\services\Yaml', 'service_yaml', 'Parseur Yaml')}
-		</ul>
+		<p>MVC ROUTER met à disposition de base de nombreux services.</p>
+		<ul class='demo-list-three mdl-list'>{$list}</ul>
 	</div>
 </div>
 HTML;

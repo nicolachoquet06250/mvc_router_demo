@@ -169,7 +169,15 @@ tr.hiddable th.hide > div {
     border-color: #673AB7;
 }
 
+.theme--dark pre[class*=language-] .function {
+    color: #DD4A68;
+}
+
 .theme--dark .mdl-list__item-primary-content,
 .theme--dark .mdl-list__item-primary-content .mdl-list__item-text-body {
     color: #eeeeee;
+}
+
+.theme--dark .mdl-list .mdl-list__item .mdl-list__item-primary-content .mdl-list__item-avatar {
+    color: #eeeeee!important;
 }
