@@ -89,3 +89,11 @@ extends:
         new: 'mvc_router\confs\custom\Mysql'
       name: 'mysql'
       file: '__DIR__/classes/confs/Mysql.php'
+
+  services:
+    \mvc_router\services\FileGeneration:
+      class:
+        old: \mvc_router\services\FileGeneration
+        new: \mvc_router\services\custom\FileGeneration
+      name: service_generation
+      file: __DIR__/classes/services/FileGeneration.php
