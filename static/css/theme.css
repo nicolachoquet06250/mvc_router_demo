@@ -136,6 +136,12 @@ pre[class*=language-] {
     overflow-y: hidden!important;
 }
 
+.mdl-grid-left {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 5px;
+}
+
     /* -- DARK THEME -- */
 
 .theme--dark, .theme--dark .mdl-layout__drawer,
