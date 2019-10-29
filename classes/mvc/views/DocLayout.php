@@ -158,6 +158,7 @@
 	{$this->menu('mobile')}
   </div>
   <main class='mdl-layout__content'>
+    <span id='top'></span>
     {$this->get_documentation_menu_tab_content()}
     <footer class='page-footer mdl-mega-footer'>
 		<div class='mdl-mega-footer__middle-section'>

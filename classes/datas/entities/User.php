@@ -112,7 +112,6 @@ class User extends Entity {
 		$json['role'] = $this->get('role');
 		return $json;
 	}
-	
 	/**
 	 * @inheritDoc
 	 */
@@ -122,7 +121,7 @@ class User extends Entity {
 				if(!$this->id) {
 					return '';
 				}
-				$user_role = $this->inject->get_pizzygo_role_manager()->get_all_from_userid($this->id);
+				$user_role = $this->inject->get_role_manager()->get_all_from_userid($this->id);
 				if(empty($user_role)) {
 					return '';
 				}

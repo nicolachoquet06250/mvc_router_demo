@@ -104,7 +104,7 @@ tr.hiddable th.hide > div {
     background: transparent;
 }
 
-#scroll-services table tr th, #scroll-services table tr td {
+section[id*=scroll-] table tr th, section[id*=scroll-] table tr td {
     text-align: left;
     width: 33%;
 }
@@ -128,13 +128,12 @@ tr.hiddable th.hide > div {
     padding-right: 15px;
 }
 
-.mdl-cell--phone-table .mdl-data-table, .mdl-cell--desktop-table .mdl-data-table {
+.mdl-cell--phone-table .mdl-data-table, .mdl-cell--tablet-table .mdl-data-table, .mdl-cell--desktop-table .mdl-data-table {
     white-space: unset;
 }
 
-.mdl-cell--phone-table .mdl-data-table, .mdl-cell--tablet-table .mdl-data-table {
-    box-sizing: content-box;
-    width: 100%;
+pre[class*=language-] {
+    overflow-y: hidden!important;
 }
 
     /* -- DARK THEME -- */

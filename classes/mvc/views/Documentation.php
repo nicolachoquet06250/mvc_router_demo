@@ -4,6 +4,9 @@
 	namespace mvc_router\mvc\views;
 	
 	
+	use mvc_router\parser\PHPDocParser;
+	use ReflectionException;
+	
 	class Documentation extends DocLayout {
 		protected $first_footer_list = [
 			'title' => 'Features',
@@ -70,7 +73,7 @@
 			
 			// add material design light dropdown
 			$this->assign('stylesheets', array_merge($this->get('stylesheets'), [ 'prism.css' ]));
-			$this->assign('scripts', array_merge($this->get('scripts'), [ 'table.js', 'prism.js' ]));
+			$this->assign('scripts', array_merge($this->get('scripts'), [ 'table.js', 'prism.js', 'documentation_functions.js' ]));
 		}
 		
 		private function get_next_tab_url() {
@@ -229,9 +232,148 @@
 HTML;
 		}
 		
+		protected function get_command_item(string $class, string $name, array $commands) {
+			$first_letter = substr(explode('\\', $class)[count(explode('\\', $class)) - 1], 0, 1);
+			$_commands = [];
+			foreach( $commands as $command => $syntaxes ) {
+				$_commands[] = '<thead><tr><th colspan="2">'.$command.'</th></tr></thead>';
+				$_commands[] = '<tbody>'.implode("\n", array_map(function($syntax) {
+					return "<tr><td colspan='2'>{$syntax}</td></tr>";
+				}, $syntaxes)).'</tbody>';
+			}
+			$_commands = implode("\n", $_commands);
+			
+			return <<<HTML
+<li class='mdl-list__item mdl-list__item--three-line'>
+	<div class='mdl-list__item-primary-content'>
+		<span class='mdl-list__item-avatar' style='color: black'>{$first_letter}</span>
+		<span>{$class}</span>
+		<div class='mdl-list__item-text-body mdl-grid'>
+			<div class='mdl-cell mdl-cell--12-col-desktop mdl-cell--hide-phone mdl-cell--hide-tablet mdl-cell--desktop-table'>
+				<table class='mdl-data-table mdl-js-data-table' style='width: 100%'>
+					<thead>
+						<tr>
+							<th>Nom</th>
+							<th>Méthode Injection de dépendences</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>{$name}</td>
+							<td>get_{$name}()</td>
+						</tr>
+					</tbody>
+					<thead>
+						<tr>
+							<th colspan='2'>Commandes</th>
+						</tr>
+					</thead>
+					{$_commands}
+				</table>
+			</div>
+			<div class='mdl-cell mdl-cell--8-col-tablet mdl-cell--hide-phone mdl-cell--hide-desktop mdl-cell--tablet-table'>
+				<table class='mdl-data-table mdl-js-data-table'>
+					<thead>
+						<tr>
+							<th>Nom</th>
+							<th>Méthode Injection de dépendences</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>{$name}</td>
+							<td>get_{$name}()</td>
+						</tr>
+					</tbody>
+					<thead>
+						<tr>
+							<th colspan='2'>Commandes</th>
+						</tr>
+					</thead>
+					{$_commands}
+				</table>
+			</div>
+			<div class='mdl-cell mdl-cell--4-col-phone mdl-cell--hide-desktop mdl-cell--hide-tablet mdl-cell--phone-table'>
+				<table class='mdl-data-table mdl-js-data-table'>
+					<thead>
+						<tr>
+							<th>Nom</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>{$name}</td>
+						</tr>
+					</tbody>
+					<thead>
+						<tr>
+							<th>Méthode Injection de dépendences</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>get_{$name}()</td>
+						</tr>
+					</tbody>
+					<thead>
+						<tr>
+							<th colspan='2'>Commandes</th>
+						</tr>
+					</thead>
+					{$_commands}
+				</table>
+			</div>
+		</div>
+	</div>
+</li>
+HTML;
+
+		}
+		
 		protected function get_code_highlighted($language, $code, $lines = false) {
 			$lines = $lines ? 'line-numbers' : '';
 			return "<pre><code class='language-{$language} {$lines}'>{$code}</code></pre>";
+		}
+		
+		protected function get_header_card($title, $description, $links = []) {
+			$map_links = function() use ($links) {
+				return implode("\n", array_map(function($link) {
+					$link_href = str_replace(['é', 'è', 'ê', 'ë'], 'e', $link);
+					$link_href = str_replace(['à', 'â', 'ä'], 'a', $link_href);
+					$link_href = str_replace([' ', "'"], '_', $link_href);
+					$link_href = strtolower($link_href);
+					return "<a href='#{$link_href}'
+							   class='mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect'>{$link}</a>";
+				}, $links));
+			};
+			
+			return <<<HTML
+<div class='mdl-card mdl-shadow--2dp'>
+	<div class='mdl-card__title'>
+		<h2 class='mdl-card__title-text'>{$title}</h2>
+	</div>
+	<div class='mdl-card__supporting-text'>
+		<p>{$description}</p>
+	</div>
+	<div class='mdl-card__actions mdl-card--border'>{$map_links()}</div>
+</div>
+HTML;
+
+		}
+		
+		protected function top_button($id_button = '', $next_id = '') {
+			$id_button = $id_button ? " id='{$id_button}'" : '';
+			return "
+	<a href='#top' style='color: unset; text-decoration: none;'{$id_button}>
+		<button class='mdl-button mdl-js-button mdl-button--icon'>
+			<i class='material-icons'>keyboard_arrow_up</i>
+		</button>
+	</a>
+".($next_id !== '' ? "\t<a href='#{$next_id}' style='color: unset; text-decoration: none;'>
+		<button class='mdl-button mdl-js-button mdl-button--icon'>
+			<i class='material-icons'>keyboard_arrow_down</i>
+		</button>
+	</a>" : '');
 		}
 		
 		protected function get_started(): string {
@@ -388,6 +530,8 @@ php exe.php install:install -p repo=[custom-git-repo] dir=[repo-dir-name]')}
 							})}
 						{$this->get_table_group('Lancer une commande', function() {
 								$date = date('Y-m-d:H:i:s');
+								$username = $this->get_username();
+								$hostname = $this->get_hostname();
 								return "<p>
 											Pour lancer une commande, Le framework met à disposition un utilitaire cli.
 										</p>
@@ -395,44 +539,34 @@ php exe.php install:install -p repo=[custom-git-repo] dir=[repo-dir-name]')}
 											Pour voir les commandes à disposition, leurs syntaxes et leurs paramètres, allez dans un terminal et tapez <code>php exe.php --help</code>
 											{$this->get_code_highlighted('shell', "php exe.php --help
 											
-username@COMPUTER-NAME~{$date} | |=========================| clone |=========================|
-username@COMPUTER-NAME~{$date} | |= repo -> php exe.php clone:repo
-username@COMPUTER-NAME~{$date} | |= test_stats -> php exe.php clone:test_stats
-username@COMPUTER-NAME~{$date} | |=========================| generate |=========================|
-username@COMPUTER-NAME~{$date} | |= dependencies -> php exe.php generate:dependencies
-username@COMPUTER-NAME~{$date} | |= base_files -> php exe.php generate:base_files
-username@COMPUTER-NAME~{$date} | |= translations -> php exe.php generate:translations
-username@COMPUTER-NAME~{$date} | |= service -> php exe.php generate:service
-username@COMPUTER-NAME~{$date} | |=========================| help |=========================|
-username@COMPUTER-NAME~{$date} | |= index -> php exe.php --help, help:index -p cmd=&lt;value&gt; [method=&lt;value&gt;?]
-username@COMPUTER-NAME~{$date} | |= home -> php exe.php help:home
-username@COMPUTER-NAME~{$date} | |=========================| install |=========================|
-username@COMPUTER-NAME~{$date} | |= install -> php exe.php install:install -p [dir=&lt;value>&gt;demo] [repo=&lt;value&gt;?https://github.com/usernameachoquet06250/mvc_router_demo.git]
-username@COMPUTER-NAME~{$date} | |= update -> php exe.php install:update
-username@COMPUTER-NAME~{$date} | |= databases -> php exe.php install:databases
-username@COMPUTER-NAME~{$date} | |=========================| start |=========================|
-username@COMPUTER-NAME~{$date} | |= websocket_server -> php exe.php start:websocket_server -p [host=&lt;value&gt;?localhost] [address=&lt;value&gt;?127.0.0.1] [port=&lt;value&gt;?8080]
-username@COMPUTER-NAME~{$date} | |= server -> php exe.php start:server -p [port=&lt;value&gt;?8080] [directory=&lt;value&gt;?]
-username@COMPUTER-NAME~{$date} | |=========================| test |=========================|
-username@COMPUTER-NAME~{$date} | |= helper_is_cli -> php exe.php test:helper_is_cli
-username@COMPUTER-NAME~{$date} | |= mysql -> php exe.php test:mysql
-username@COMPUTER-NAME~{$date} | |= number_of_lines_in_project -> php exe.php test:number_of_lines_in_project")}
+{$username}@{$hostname}~{$date} | |=========================| clone |=========================|
+{$username}@{$hostname}~{$date} | |= repo -> php exe.php clone:repo
+{$username}@{$hostname}~{$date} | |= test_stats -> php exe.php clone:test_stats
+{$username}@{$hostname}~{$date} | |=========================| generate |=========================|
+{$username}@{$hostname}~{$date} | |= dependencies -> php exe.php generate:dependencies
+{$username}@{$hostname}~{$date} | |= base_files -> php exe.php generate:base_files
+{$username}@{$hostname}~{$date} | |= translations -> php exe.php generate:translations
+{$username}@{$hostname}~{$date} | |= service -> php exe.php generate:service
+{$username}@{$hostname}~{$date} | |=========================| help |=========================|
+{$username}@{$hostname}~{$date} | |= index -> php exe.php --help, help:index -p cmd=&lt;value&gt; [method=&lt;value&gt;?]
+{$username}@{$hostname}~{$date} | |= home -> php exe.php help:home
+{$username}@{$hostname}~{$date} | |=========================| install |=========================|
+{$username}@{$hostname}~{$date} | |= install -> php exe.php install:install -p [dir=&lt;value>&gt;demo] [repo=&lt;value&gt;?https://github.com/usernameachoquet06250/mvc_router_demo.git]
+{$username}@{$hostname}~{$date} | |= update -> php exe.php install:update
+{$username}@{$hostname}~{$date} | |= databases -> php exe.php install:databases
+{$username}@{$hostname}~{$date} | |=========================| start |=========================|
+{$username}@{$hostname}~{$date} | |= websocket_server -> php exe.php start:websocket_server -p [host=&lt;value&gt;?localhost] [address=&lt;value&gt;?127.0.0.1] [port=&lt;value&gt;?8080]
+{$username}@{$hostname}~{$date} | |= server -> php exe.php start:server -p [port=&lt;value&gt;?8080] [directory=&lt;value&gt;?]
+{$username}@{$hostname}~{$date} | |=========================| test |=========================|
+{$username}@{$hostname}~{$date} | |= helper_is_cli -> php exe.php test:helper_is_cli
+{$username}@{$hostname}~{$date} | |= mysql -> php exe.php test:mysql
+{$username}@{$hostname}~{$date} | |= number_of_lines_in_project -> php exe.php test:number_of_lines_in_project")}
 										</p>";
 							})}
 					</table>
 				</div>
 			</div>
 			";
-		}
-		
-		protected function top_button() {
-			return "
-	<a href='#top' style='color: unset'>
-		<button class='mdl-button mdl-js-button mdl-button--icon'>
-			<i class='material-icons'>keyboard_arrow_up</i>
-		</button>
-	</a>
-";
 		}
 		
 		protected function services(): string {
@@ -450,47 +584,30 @@ username@COMPUTER-NAME~{$date} | |= number_of_lines_in_project -> php exe.php te
 			}
 			$list = implode("\n", $list);
 			return <<<HTML
-<div class='mdl-grid' id='top'>
+<div class='mdl-grid'>
 	<div class='mdl-cell mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone'>
 		<div class='mdl-grid'>
 			<div class='mdl-cell mdl-cell--3-col-desktop mdl-cell--hide-tablet mdl-cell--hide-phone'></div>
 			<div class='mdl-cell mdl-cell--6-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone'>
-				<div class='mdl-card mdl-shadow--2dp'>
-					<div class='mdl-card__title'>
-						<h2 class='mdl-card__title-text'>Services</h2>
-					</div>
-					<div class='mdl-card__supporting-text'>
-						MVC ROUTER met à disposition de base de nombreux services.<br />
-						Voici tous les services livés dans le core du framework.
-					</div>
-					<div class="mdl-card__actions mdl-card--border">
-						<a  href='#service_list'
-							class='mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect'>
-							Liste des services
-						</a>
-						<a  href='#use_service'
-							class='mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect'>
-							Comment les utiliser
-						</a>
-						<a  href='#create_service'
-							class='mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect'>
-							Comment en créer
-						</a>
-						<a  href='#customize_service'
-							class='mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect'>
-							Comment les customiser
-						</a>
-					</div>
-				</div>
+				{$this->get_header_card(
+					'Les Services',
+					'MVC ROUTER met à disposition de base de nombreux services.<br />
+						Voici tous les services livés dans le core du framework.',
+					[
+						'Liste des services',
+						'Comment les utiliser',
+						'Comment en créer',
+						'Comment les customiser',
+					])}
 			</div>
 		</div>
 		<div class='mdl-grid'>
-			<section class='mdl-cell mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone' id='service_list'>
-				<h3>Liste des services {$this->top_button()}</h3>
+			<section class='mdl-cell mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone'>
+				<h3>Liste des services {$this->top_button('liste_des_services', 'comment_les_utiliser')}</h3>
 				<ul class='mdl-list'>{$list}</ul>
 			</section>
-			<section class='mdl-cell mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone' id='use_service'>
-				<h3>Comment utiliser un service {$this->top_button()}</h3>
+			<section class='mdl-cell mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone'>
+				<h3>Comment utiliser un service {$this->top_button('comment_les_utiliser', 'comment_en_creer')}</h3>
 				<div class='mdl-grid'>
 					<div class='mdl-cell mdl-cell--6-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone'>
 						Pour utiliser un service, MVC ROUTER prend en charge deux manières de faire :
@@ -535,8 +652,8 @@ username@COMPUTER-NAME~{$date} | |= number_of_lines_in_project -> php exe.php te
 					</div>
 				</div>
 			</section>
-			<section class='mdl-cell mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone' id='create_service'>
-				<h3>Comment créer un service {$this->top_button()}</h3>
+			<section class='mdl-cell mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone'>
+				<h3>Comment créer un service {$this->top_button('comment_en_creer', 'comment_les_customiser')}</h3>
 				<p>Deux façons s'offrent à vous :</p>
 				<ul>
 					<li>Soit à la main :</li>
@@ -557,7 +674,7 @@ touch MonService.php
 ')}
 					</div>
 					<div class='mdl-cell mdl-cell--6-col-desktop mdl-cell--4-col-tablet mdl-cell--4-col-phone'>
-						Ouvrez le fichier <code>[project-custom-dir]/classes/services/MonService.php dans votre IDE préféré</code>
+						Ouvrez le fichier <code>[project-custom-dir]/classes/services/MonService.php</code> dans votre IDE préféré
 						{$this->get_code_highlighted('php', '&lt;?php
 	namespace my\service\namespace;
 	
@@ -583,33 +700,35 @@ touch MonService.php
 						Reprenez votre terminal et tapez <code>php exe.php install:update</code>
 						{$this->get_code_highlighted('shell', (function() {
 							$date = date('Y-m-d:H:i:s');
+							$username = $this->get_username();
+							$hostname = $this->get_hostname();
 							return "php exe.php install:update
 
-username@COMPUTER-NAME~{$date} | command: git pull
-username@COMPUTER-NAME~{$date} | Already up to date.
-username@COMPUTER-NAME~{$date} | ---------------------------------------------------------------------------
-username@COMPUTER-NAME~{$date} | command: git -C C:\\Users\\nicol\\PhpstormProjects\\mvc_router\\demo pull
-username@COMPUTER-NAME~{$date} | Already up to date.
-username@COMPUTER-NAME~{$date} | ---------------------------------------------------------------------------
-username@COMPUTER-NAME~{$date} | command: composer update
+{$username}@{$hostname}~{$date} | command: git pull
+{$username}@{$hostname}~{$date} | Already up to date.
+{$username}@{$hostname}~{$date} | ---------------------------------------------------------------------------
+{$username}@{$hostname}~{$date} | command: git -C C:\\Users\\nicol\\PhpstormProjects\\mvc_router\\demo pull
+{$username}@{$hostname}~{$date} | Already up to date.
+{$username}@{$hostname}~{$date} | ---------------------------------------------------------------------------
+{$username}@{$hostname}~{$date} | command: composer update
 Loading composer repositories with package information
 Updating dependencies (including require-dev)
 Nothing to install or update
 Generating autoload files
-username@COMPUTER-NAME~{$date} | ---------------------------------------------------------------------------
-username@COMPUTER-NAME~{$date} | command: generate:dependencies -p custom-file=C:\\Users\\nicol\\PhpstormProjects\\mvc_router\\demo/update_dependencies.php
-username@COMPUTER-NAME~{$date} | DependencyWrapper.php and ConfWrapper.php has been generated !
-username@COMPUTER-NAME~{$date} | ---------------------------------------------------------------------------
-username@COMPUTER-NAME~{$date} | command: generate:base_files -p custom-dir=C:\\Users\\nicol\\PhpstormProjects\\mvc_router\\demo
-username@COMPUTER-NAME~{$date} | All default files has been generated ! Don't forget to fill the classes/confs/mysql.json file
-username@COMPUTER-NAME~{$date} | ---------------------------------------------------------------------------
-username@COMPUTER-NAME~{$date} | command: generate:translations
-username@COMPUTER-NAME~{$date} | Les langues fr-FR, en-GB, en-US ont bien été générés
-username@COMPUTER-NAME~{$date} | ---------------------------------------------------------------------------
-username@COMPUTER-NAME~{$date} | command: install:databases
-username@COMPUTER-NAME~{$date} | user => true
-username@COMPUTER-NAME~{$date} | role => true
-username@COMPUTER-NAME~{$date} | ---------------------------------------------------------------------------
+{$username}@{$hostname}~{$date} | ---------------------------------------------------------------------------
+{$username}@{$hostname}~{$date} | command: generate:dependencies -p custom-file=C:\\Users\\nicol\\PhpstormProjects\\mvc_router\\demo/update_dependencies.php
+{$username}@{$hostname}~{$date} | DependencyWrapper.php and ConfWrapper.php has been generated !
+{$username}@{$hostname}~{$date} | ---------------------------------------------------------------------------
+{$username}@{$hostname}~{$date} | command: generate:base_files -p custom-dir=C:\\Users\\nicol\\PhpstormProjects\\mvc_router\\demo
+{$username}@{$hostname}~{$date} | All default files has been generated ! Don't forget to fill the classes/confs/mysql.json file
+{$username}@{$hostname}~{$date} | ---------------------------------------------------------------------------
+{$username}@{$hostname}~{$date} | command: generate:translations
+{$username}@{$hostname}~{$date} | Les langues fr-FR, en-GB, en-US ont bien été générés
+{$username}@{$hostname}~{$date} | ---------------------------------------------------------------------------
+{$username}@{$hostname}~{$date} | command: install:databases
+{$username}@{$hostname}~{$date} | user => true
+{$username}@{$hostname}~{$date} | role => true
+{$username}@{$hostname}~{$date} | ---------------------------------------------------------------------------
 
 ";
 						})())}
@@ -623,40 +742,42 @@ username@COMPUTER-NAME~{$date} | -----------------------------------------------
 						Ouvrez un terminal et tapez <code>php exe.php generate:service -p name=[service-name] site=[custom-dir-name] is_singleton=[true|false]</code>
 						{$this->get_code_highlighted('shell', (function() {
 							$date = date('Y-m-d:H:i:s');
+							$username = $this->get_username();
+							$hostname = $this->get_hostname();
 							return "php exe.php generate:service -p name=hello_world site=demo is_singleton=true
 
-username@COMPUTER-NAME~{$date} | command: git pull
-username@COMPUTER-NAME~{$date} | Already up to date.
-username@COMPUTER-NAME~{$date} | ---------------------------------------------------------------------------
-username@COMPUTER-NAME~{$date} | command: git -C C:\Users\\nicol\PhpstormProjects\mvc_router\demo pull
-username@COMPUTER-NAME~{$date} | Already up to date.
-username@COMPUTER-NAME~{$date} | ---------------------------------------------------------------------------
-username@COMPUTER-NAME~{$date} | command: composer update
+{$username}@{$hostname}~{$date} | command: git pull
+{$username}@{$hostname}~{$date} | Already up to date.
+{$username}@{$hostname}~{$date} | ---------------------------------------------------------------------------
+{$username}@{$hostname}~{$date} | command: git -C C:\Users\\nicol\PhpstormProjects\mvc_router\demo pull
+{$username}@{$hostname}~{$date} | Already up to date.
+{$username}@{$hostname}~{$date} | ---------------------------------------------------------------------------
+{$username}@{$hostname}~{$date} | command: composer update
 Loading composer repositories with package information
 Updating dependencies (including require-dev)
 Nothing to install or update
 Generating autoload files
-username@COMPUTER-NAME~{$date} | ---------------------------------------------------------------------------
-username@COMPUTER-NAME~{$date} | command: generate:dependencies -p custom-file=C:\Users\\nicol\PhpstormProjects\mvc_router\demo/update_dependencies.php
-username@COMPUTER-NAME~{$date} | DependencyWrapper.php and ConfWrapper.php has been generated !
-username@COMPUTER-NAME~{$date} | ---------------------------------------------------------------------------
-username@COMPUTER-NAME~{$date} | command: generate:base_files -p custom-dir=C:\Users\\nicol\PhpstormProjects\mvc_router\demo
-username@COMPUTER-NAME~{$date} | All default files has been generated ! Don't forget to fill the classes/confs/mysql.json file
-username@COMPUTER-NAME~{$date} | ---------------------------------------------------------------------------
-username@COMPUTER-NAME~{$date} | command: generate:translations
-username@COMPUTER-NAME~{$date} | Les langues fr-FR, en-GB, en-US ont bien été générés
-username@COMPUTER-NAME~{$date} | ---------------------------------------------------------------------------
-username@COMPUTER-NAME~{$date} | command: install:databases
-username@COMPUTER-NAME~{$date} | user => true
-username@COMPUTER-NAME~{$date} | role => true
-username@COMPUTER-NAME~{$date} | ---------------------------------------------------------------------------
-username@COMPUTER-NAME~{$date} | Le service hello_world à été généré et intégré dans dependencies.yaml avec succès !";
+{$username}@{$hostname}~{$date} | ---------------------------------------------------------------------------
+{$username}@{$hostname}~{$date} | command: generate:dependencies -p custom-file=C:\Users\\nicol\PhpstormProjects\mvc_router\demo/update_dependencies.php
+{$username}@{$hostname}~{$date} | DependencyWrapper.php and ConfWrapper.php has been generated !
+{$username}@{$hostname}~{$date} | ---------------------------------------------------------------------------
+{$username}@{$hostname}~{$date} | command: generate:base_files -p custom-dir=C:\Users\\nicol\PhpstormProjects\mvc_router\demo
+{$username}@{$hostname}~{$date} | All default files has been generated ! Don't forget to fill the classes/confs/mysql.json file
+{$username}@{$hostname}~{$date} | ---------------------------------------------------------------------------
+{$username}@{$hostname}~{$date} | command: generate:translations
+{$username}@{$hostname}~{$date} | Les langues fr-FR, en-GB, en-US ont bien été générés
+{$username}@{$hostname}~{$date} | ---------------------------------------------------------------------------
+{$username}@{$hostname}~{$date} | command: install:databases
+{$username}@{$hostname}~{$date} | user => true
+{$username}@{$hostname}~{$date} | role => true
+{$username}@{$hostname}~{$date} | ---------------------------------------------------------------------------
+{$username}@{$hostname}~{$date} | Le service hello_world à été généré et intégré dans dependencies.yaml avec succès !";
 						})())}
 					</div>
 				</div>
 			</section>
-			<section class='mdl-cell mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone' id='customize_service'>
-				<h3>Comment customiser un service {$this->top_button()}</h3>
+			<section class='mdl-cell mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone'>
+				<h3>Comment customiser un service {$this->top_button('comment_les_customiser')}</h3>
 				<p>Idem, deux façons s'offrent à vous :</p>
 				<ul>
 					<li>Soit à la main :</li>
@@ -677,7 +798,7 @@ touch MonService.php
 ')}
 					</div>
 					<div class='mdl-cell mdl-cell--6-col-desktop mdl-cell--4-col-tablet mdl-cell--4-col-phone'>
-						Ouvrez le fichier <code>[project-custom-dir]/classes/services/MonService.php dans votre IDE préféré</code>
+						Ouvrez le fichier <code>[project-custom-dir]/classes/services/MonService.php</code> dans votre IDE préféré
 						{$this->get_code_highlighted('php', '&lt;?php
 	namespace my\service\namespace;
 	
@@ -706,33 +827,35 @@ touch MonService.php
 						Reprenez votre terminal et tapez <code>php exe.php install:update</code>
 						{$this->get_code_highlighted('shell', (function() {
 				$date = date('Y-m-d:H:i:s');
+				$username = $this->get_username();
+				$hostname = $this->get_hostname();
 				return "php exe.php install:update
 
-username@COMPUTER-NAME~{$date} | command: git pull
-username@COMPUTER-NAME~{$date} | Already up to date.
-username@COMPUTER-NAME~{$date} | ---------------------------------------------------------------------------
-username@COMPUTER-NAME~{$date} | command: git -C C:\\Users\\nicol\\PhpstormProjects\\mvc_router\\demo pull
-username@COMPUTER-NAME~{$date} | Already up to date.
-username@COMPUTER-NAME~{$date} | ---------------------------------------------------------------------------
-username@COMPUTER-NAME~{$date} | command: composer update
+{$username}@{$hostname}~{$date} | command: git pull
+{$username}@{$hostname}~{$date} | Already up to date.
+{$username}@{$hostname}~{$date} | ---------------------------------------------------------------------------
+{$username}@{$hostname}~{$date} | command: git -C C:\\Users\\nicol\\PhpstormProjects\\mvc_router\\demo pull
+{$username}@{$hostname}~{$date} | Already up to date.
+{$username}@{$hostname}~{$date} | ---------------------------------------------------------------------------
+{$username}@{$hostname}~{$date} | command: composer update
 Loading composer repositories with package information
 Updating dependencies (including require-dev)
 Nothing to install or update
 Generating autoload files
-username@COMPUTER-NAME~{$date} | ---------------------------------------------------------------------------
-username@COMPUTER-NAME~{$date} | command: generate:dependencies -p custom-file=C:\\Users\\nicol\\PhpstormProjects\\mvc_router\\demo/update_dependencies.php
-username@COMPUTER-NAME~{$date} | DependencyWrapper.php and ConfWrapper.php has been generated !
-username@COMPUTER-NAME~{$date} | ---------------------------------------------------------------------------
-username@COMPUTER-NAME~{$date} | command: generate:base_files -p custom-dir=C:\\Users\\nicol\\PhpstormProjects\\mvc_router\\demo
-username@COMPUTER-NAME~{$date} | All default files has been generated ! Don't forget to fill the classes/confs/mysql.json file
-username@COMPUTER-NAME~{$date} | ---------------------------------------------------------------------------
-username@COMPUTER-NAME~{$date} | command: generate:translations
-username@COMPUTER-NAME~{$date} | Les langues fr-FR, en-GB, en-US ont bien été générés
-username@COMPUTER-NAME~{$date} | ---------------------------------------------------------------------------
-username@COMPUTER-NAME~{$date} | command: install:databases
-username@COMPUTER-NAME~{$date} | user => true
-username@COMPUTER-NAME~{$date} | role => true
-username@COMPUTER-NAME~{$date} | ---------------------------------------------------------------------------
+{$username}@{$hostname}~{$date} | ---------------------------------------------------------------------------
+{$username}@{$hostname}~{$date} | command: generate:dependencies -p custom-file=C:\\Users\\nicol\\PhpstormProjects\\mvc_router\\demo/update_dependencies.php
+{$username}@{$hostname}~{$date} | DependencyWrapper.php and ConfWrapper.php has been generated !
+{$username}@{$hostname}~{$date} | ---------------------------------------------------------------------------
+{$username}@{$hostname}~{$date} | command: generate:base_files -p custom-dir=C:\\Users\\nicol\\PhpstormProjects\\mvc_router\\demo
+{$username}@{$hostname}~{$date} | All default files has been generated ! Don't forget to fill the classes/confs/mysql.json file
+{$username}@{$hostname}~{$date} | ---------------------------------------------------------------------------
+{$username}@{$hostname}~{$date} | command: generate:translations
+{$username}@{$hostname}~{$date} | Les langues fr-FR, en-GB, en-US ont bien été générés
+{$username}@{$hostname}~{$date} | ---------------------------------------------------------------------------
+{$username}@{$hostname}~{$date} | command: install:databases
+{$username}@{$hostname}~{$date} | user => true
+{$username}@{$hostname}~{$date} | role => true
+{$username}@{$hostname}~{$date} | ---------------------------------------------------------------------------
 
 ";
 			})())}
@@ -746,34 +869,36 @@ username@COMPUTER-NAME~{$date} | -----------------------------------------------
 						Ouvrez un terminal et tapez <code>php exe.php generate:customized_service -p name=[service-name] site=[custom-dir-name] is_singleton=[true|false]</code>
 						{$this->get_code_highlighted('shell', (function() {
 				$date = date('Y-m-d:H:i:s');
+				$username = $this->get_username();
+				$hostname = $this->get_hostname();
 				return "php exe.php generate:customized_service -p name=mon_service site=demo is_singleton=true
 
-username@COMPUTER-NAME~{$date} | command: git pull
-username@COMPUTER-NAME~{$date} | Already up to date.
-username@COMPUTER-NAME~{$date} | ---------------------------------------------------------------------------
-username@COMPUTER-NAME~{$date} | command: git -C C:\Users\\nicol\PhpstormProjects\mvc_router\demo pull
-username@COMPUTER-NAME~{$date} | Already up to date.
-username@COMPUTER-NAME~{$date} | ---------------------------------------------------------------------------
-username@COMPUTER-NAME~{$date} | command: composer update
+{$username}@{$hostname}~{$date} | command: git pull
+{$username}@{$hostname}~{$date} | Already up to date.
+{$username}@{$hostname}~{$date} | ---------------------------------------------------------------------------
+{$username}@{$hostname}~{$date} | command: git -C C:\Users\\nicol\PhpstormProjects\mvc_router\demo pull
+{$username}@{$hostname}~{$date} | Already up to date.
+{$username}@{$hostname}~{$date} | ---------------------------------------------------------------------------
+{$username}@{$hostname}~{$date} | command: composer update
 Loading composer repositories with package information
 Updating dependencies (including require-dev)
 Nothing to install or update
 Generating autoload files
-username@COMPUTER-NAME~{$date} | ---------------------------------------------------------------------------
-username@COMPUTER-NAME~{$date} | command: generate:dependencies -p custom-file=C:\Users\\nicol\PhpstormProjects\mvc_router\demo/update_dependencies.php
-username@COMPUTER-NAME~{$date} | DependencyWrapper.php and ConfWrapper.php has been generated !
-username@COMPUTER-NAME~{$date} | ---------------------------------------------------------------------------
-username@COMPUTER-NAME~{$date} | command: generate:base_files -p custom-dir=C:\Users\\nicol\PhpstormProjects\mvc_router\demo
-username@COMPUTER-NAME~{$date} | All default files has been generated ! Don't forget to fill the classes/confs/mysql.json file
-username@COMPUTER-NAME~{$date} | ---------------------------------------------------------------------------
-username@COMPUTER-NAME~{$date} | command: generate:translations
-username@COMPUTER-NAME~{$date} | Les langues fr-FR, en-GB, en-US ont bien été générés
-username@COMPUTER-NAME~{$date} | ---------------------------------------------------------------------------
-username@COMPUTER-NAME~{$date} | command: install:databases
-username@COMPUTER-NAME~{$date} | user => true
-username@COMPUTER-NAME~{$date} | role => true
-username@COMPUTER-NAME~{$date} | ---------------------------------------------------------------------------
-username@COMPUTER-NAME~{$date} | Le service mon_service à été généré en extension du service de base et intégré dans dependencies.yaml avec succès !";
+{$username}@{$hostname}~{$date} | ---------------------------------------------------------------------------
+{$username}@{$hostname}~{$date} | command: generate:dependencies -p custom-file=C:\Users\\nicol\PhpstormProjects\mvc_router\demo/update_dependencies.php
+{$username}@{$hostname}~{$date} | DependencyWrapper.php and ConfWrapper.php has been generated !
+{$username}@{$hostname}~{$date} | ---------------------------------------------------------------------------
+{$username}@{$hostname}~{$date} | command: generate:base_files -p custom-dir=C:\Users\\nicol\PhpstormProjects\mvc_router\demo
+{$username}@{$hostname}~{$date} | All default files has been generated ! Don't forget to fill the classes/confs/mysql.json file
+{$username}@{$hostname}~{$date} | ---------------------------------------------------------------------------
+{$username}@{$hostname}~{$date} | command: generate:translations
+{$username}@{$hostname}~{$date} | Les langues fr-FR, en-GB, en-US ont bien été générés
+{$username}@{$hostname}~{$date} | ---------------------------------------------------------------------------
+{$username}@{$hostname}~{$date} | command: install:databases
+{$username}@{$hostname}~{$date} | user => true
+{$username}@{$hostname}~{$date} | role => true
+{$username}@{$hostname}~{$date} | ---------------------------------------------------------------------------
+{$username}@{$hostname}~{$date} | Le service mon_service à été généré en extension du service de base et intégré dans dependencies.yaml avec succès !";
 			})())}
 					</div>
 				</div>
@@ -790,23 +915,29 @@ HTML;
 							<div class='mdl-grid'>
 								<div class='mdl-cell mdl-cell--3-col-desktop mdl-cell--hide-tablet mdl-cell--hide-phone'></div>
 								<div class='mdl-cell mdl-cell--6-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone'>
-									<div class='mdl-card mdl-shadow--2dp'>
-										<div class='mdl-card__title'>
-											<h2 class='mdl-card__title-text'>Controlleurs</h2>
-										</div>
-										<div class='mdl-card__supporting-text'>
-											Les controlleurs de MVC ROUTER sont assez simple d'utilisation.<br />
-											Ils intègrent l'injection de dépendence, et un système de routage grâce à la PHPDoc.
-										</div>
-										<div class='mdl-card__actions mdl-card--border'>
-											<a  class='mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect'>Button</a>
-										</div>
-									</div>
+									{$this->get_header_card(
+										'Les Controlleurs',
+										'<p>
+												Les controlleurs de MVC ROUTER sont assez simple d\'utilisation.<br />
+												Ils intègrent l\'injection de dépendence, et un système de routage grâce à l\'annotation <code>@route</code> dans la PHPDoc.<br />
+											</p>
+											<p>
+												Les routes sont générées automatiquement en fonction des méthodes <code>public</code> des controlleurs.<br />
+												La syntaxe d\'une route généré est la suivante : <code>/controlleur_name/methode</code>.<br />
+												Si vous voulez qu\'une méthode <code>public</code> ne soit pas une route, pausez une annotation <code>@route_disabled</code> dessus.
+											</p>
+											<p>Pour changer le point d\'entré du site ou du WebService, un fichier <code>htaccess.php</code> est généré dans votre répertoire custom.</p>',
+										[
+											'Créer un controlleur',
+											'Binder un controlleur à l\'injection de dépendences',
+											'Changer le point d\'entré'
+										]
+									)}
 								</div>
 							</div>
 							<div class='mdl-grid'>
 								<section class='mdl-cell mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone'>
-									<h3>Créer un controlleur {$this->top_button()}</h3>
+									<h3>Créer un controlleur {$this->top_button('creer_un_controlleur', 'binder_un_controlleur_a_l_injection_de_dependences')}</h3>
 									<div class='mdl-grid'>
 										<div class='mdl-cell mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone'>
 											Par exemple
@@ -814,7 +945,6 @@ HTML;
 	namespace mvc_router\mvc;
 	
 	use Exception;
-	use mvc_router\data\gesture\custom\managers\User;
 	use mvc_router\router\Router;
 	use mvc_router\services\FileSystem;
 	use mvc_router\services\Route;
@@ -827,6 +957,7 @@ HTML;
 	
 		/**
 		 * @route \/routes\/?(?&lt;stats&gt;stats)?
+		 *
 		 * @param views\Route $route_view
 		 * @param Router      $router
 		 * @param Route       $service_route
@@ -846,6 +977,7 @@ HTML;
 	
 		/**
 		 * @route /routes/url_generator
+		 *
 		 * @param UrlGenerator $urlGenerator
 		 * @param FileSystem   $fileSystem
 		 * @return false|string
@@ -866,13 +998,59 @@ HTML;
 		}
 		
 		/**
-		 * @param User $user_manager
-		 * @return false|string
+		 * @route_disabled
+		 *
+		 * @return string
 		 */
-		public function test_managers(User $user_manager) {
-			$users = $user_manager->get_all_from_id(1);
-			return $this->var_dump($users);
+		public function is_not_route() {
+			return \'hello_world\';
 		}
+		
+		/**
+		 * @return string
+		 */
+		private function is_not_route2() {
+			return \'hello_world\';
+		}
+	}
+					
+					', true)}
+										</div>
+									</div>
+								</section>
+								<section class='mdl-cell mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone'>
+									<h3>Binder un controlleur à l'injection de dépendences {$this->top_button('binder_un_controlleur_a_l_injection_de_dependences', 'changer_le_point_d_entre')}</h3>
+									<div class='mdl-grid'>
+										<div class='mdl-cell mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone'>
+											<p>Pour binder un controlleur à l'injection de dépdendences, rien de plus simple : </p>
+											<p>Ouvrez le fichier <code>dependencies.yaml</code> à la racine de votre répertoire custom.</p>
+											<p>Ajouter les lignes suivantes</p>
+											{$this->get_code_highlighted('yaml', 'add:
+  controllers:
+    \mvc_router\mvc\Controllers\Documentation:
+      name: \'documentation_controller\'
+      file: \'__DIR__/classes/mvc/controllers/Documentation.php\'
+					
+					', true)}
+											Une fois ces lignes ajoutées, ouvez un terminal et tapez la commande suivante
+											{$this->get_code_highlighted('shell', 'php exe.php install:update')}
+										</div>
+									</div>
+								</section>
+								<section class='mdl-cell mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone'>
+									<h3>Changer le point d'entré {$this->top_button('changer_le_point_d_entre')}</h3>
+									<div class='mdl-grid'>
+										<div class='mdl-cell mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone'>
+											Le point d'entré par default correspond à la méthode <code>index</code> du controlleur qui est nomé <code>route_controller</code>.<br />
+											Pour changer le point d'entré changez le paramètre de la méthode <code>root_route</code>.<br />
+											Si la méthode du point d'entré à déjà une route associé, la route <code>/</code> y sera ajouté et cette méthode aura donc deux routes associés.
+											{$this->get_code_highlighted('php', '&lt;?php
+		
+	try {
+		mvc_router\dependencies\Dependency::get_wrapper_factory()->get_dependency_wrapper()->get_router()
+			->root_route(\'route_controller\')->inspect_controllers();
+	} catch(Exception $e) {
+		exit($e->getMessage());
 	}
 					
 					', true)}
@@ -885,63 +1063,928 @@ HTML;
 		}
 		
 		protected function views(): string {
-			return "<div class='mdl-grid'>
-						<div class='mdl-cell mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone'>
-							<h3>Vues</h3>
-							<ul>
-								<li>Viserys</li>
-								<li>Daenerys</li>
-							</ul>
-						</div>
-					</div>";
+			return <<<HTML
+<div class='mdl-grid'>
+	<div class='mdl-cell mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone'>
+		<div class='mdl-grid'>
+			<div class='mdl-cell mdl-cell--3-col-desktop mdl-cell--hide-tablet mdl-cell--hide-phone'></div>
+			<div class='mdl-cell mdl-cell--6-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone'>
+				{$this->get_header_card(
+					'Les Vues',
+					'Les vues de MVC ROUTER sont de pures classes PHP qui étendent simplement la classe<code>View</code>.',
+					[
+						'Créer une vue',
+						'Utiliser une vue',
+						'Binder une vue à l\'injection de dépendences'
+					]
+				)}
+			</div>
+		</div>
+		<div class='mdl-grid'>
+			<section class='mdl-cell mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone'>
+				<h3>Créer une vue {$this->top_button('creer_une_vue', 'utiliser_une_vue')}</h3>
+				<div class='mdl-grid'>
+					<div class='mdl-cell mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone'>
+						Voici un example de vue.<br />
+						La méthode <code>render</code> est utilisée pour renvoyer le code HTML.<br />
+						C'est elle qui est retournée à la fin du processus.<br />
+						La méthode <code>get</code> sert à récupérer des variables envoyées dans la vue grâce à la méthode <code>assign</code>
+						{$this->get_code_highlighted('php', '&lt;?php
+	namespace mvc_router\mvc\views;
+	
+	
+	use mvc_router\mvc\View;
+	
+	class Layout extends View {
+		const NONE         = 0;
+		const FROM_SCRATCH = 0;
+		const BOOTSTRAP    = 2;
+		const SEMANTIC_UI  = 3;
+		const MATERIAL_DESIGN_LIGHT = 4;
+		const FONT_AWESOME = 1;
+		const GLYPHICON    = 2;
+		const MATERIAL_ICONS = 3;
+		
+		/**
+		 * @return string
+		 */
+		public function responsive_meta_tag(): string {
+			return \'&lt;meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />\';
+		}
+		
+		/**
+		 * @param int $lib
+		 * @return string
+		 */
+		public function font_icons( $lib = self::NONE ): string {
+			switch( $lib ) {
+				case self::FONT_AWESOME:
+					return \'
+	&lt;script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js"
+			integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ"
+			crossorigin="anonymous">&lt;/script>
+	&lt;script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js"
+			integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY"
+			crossorigin="anonymous">&lt;/script>\';
+				case self::GLYPHICON:
+					return \'&lt;link rel="stylesheet" href="https://www.glyphicons.com/css/style.css?v=12">\';
+				case self::MATERIAL_ICONS:
+					return \'&lt;link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">\';
+				default:
+					return \'\';
+			}
+		}
+		
+		/**
+		 * @param int $framework
+		 * @param bool $jquery
+		 * @param null $script_name
+		 * @return string
+		 */
+		public function js( $framework = self::FROM_SCRATCH, $jquery = false, $script_name = null ): string {
+			switch( $framework ) {
+				case self::FROM_SCRATCH:
+					if(substr($script_name, 0, strlen(\'http://\')) !== \'http://\' && substr($script_name, 0, strlen(\'https://\')) !== \'https://\') {
+						$script_name = "/static/js/{$script_name}";
+					}
+					return "&lt;script src=\'{$script_name}\' data-base_src=\'{$script_name}\'>&lt;/script>";
+				case self::BOOTSTRAP:
+					$jquery_str = \'\';
+					if( $jquery ) {
+						$jquery_str = "&lt;script src=\'https://code.jquery.com/jquery-3.4.1.min.js\'>&lt;/script>";
+					}
+					return "
+	{$jquery_str}
+	&lt;script src=\'https://unpkg.com/popper.js@^1\'>&lt;/script>
+	&lt;script src=\'https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js\'
+			integrity=\'sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM\'
+			crossorigin=\'anonymous\'>&lt;/script>";
+				case self::SEMANTIC_UI:
+					$jquery_str = \'\';
+					if( $jquery ) {
+						$jquery_str = "&lt;script src=\'https://code.jquery.com/jquery-3.4.1.min.js\'>&lt;/script>";
+					}
+					return "
+	{$jquery_str}
+	&lt;script src=\'https://code.jquery.com/jquery-3.4.1.min.js\'>&lt;/script>
+	&lt;script src=\'https://semantic-ui.com/dist/semantic.min.js\'>&lt;/script>";
+				case self::MATERIAL_DESIGN_LIGHT:
+					return \'&lt;script defer src="https://code.getmdl.io/1.3.0/material.min.js">&lt;/script>\';
+				default:
+					return \'\';
+			}
+		}
+		
+		/**
+		 * @param int $framework
+		 * @param null $stylesheet_name
+		 * @return string
+		 */
+		public function css( $framework = self::FROM_SCRATCH, $stylesheet_name = null ) {
+			switch( $framework ) {
+				case self::FROM_SCRATCH:
+					if(substr($stylesheet_name, 0, strlen(\'http://\')) !== \'http://\' && substr($stylesheet_name, 0, strlen(\'https://\')) !== \'https://\') {
+						$stylesheet_name = "/static/css/{$stylesheet_name}";
+					}
+					return "&lt;link rel=\'stylesheet\' href=\'{$stylesheet_name}\' data-base_href=\'{$stylesheet_name}\' />";
+				case self::BOOTSTRAP:
+					return "&lt;link rel=\'stylesheet\' href=\'https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css\'
+							  integrity=\'sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T\'
+							  crossorigin=\'anonymous\' />";
+				case self::SEMANTIC_UI:
+					return "&lt;link rel=\'stylesheet\' href=\'https://semantic-ui.com/dist/semantic.min.css\' />";
+				case self::MATERIAL_DESIGN_LIGHT:
+					$first_color = $this->get(\'material_first_theme_color\') ?? \'deep_purple\';
+					$second_color = $this->get(\'material_second_theme_color\') ?? \'purple\';
+					return "&lt;link rel=\'stylesheet\' href=\'https://code.getmdl.io/1.3.0/material.{$first_color}-{$second_color}.min.css\' />";
+				default:
+					return \'\';
+			}
+		}
+		
+		/**
+		 * @return string
+		 */
+		protected function head(): string {
+			$responsive_tag = $this->get( \'is_responsive\' ) ? $this->responsive_meta_tag() : \'\';
+			$icons = $this->get( \'font_icons\' ) ? $this->font_icons( $this->get( \'font_icons\' ) ) : \'\';
+			$framework = $this->get( \'framework\' );
+			$icon = $this->get(\'icon\') ? "&lt;link rel=\'icon\' href=\'{$this->get(\'icon\')}\' />" : \'\';
+			
+			$stylesheets = $this->css( $framework )."\n";
+			if( $this->get( \'stylesheets\' ) ) {
+				foreach( $this->get( \'stylesheets\' ) as $stylesheet ) {
+					$stylesheets .= $this->css( self::FROM_SCRATCH, $stylesheet );
+				}
+			}
+			
+			$scripts = $this->get_js();
+			
+			return "&lt;meta charset=\'utf-8\' />
+	{$icon}
+	&lt;title>{$this->get(\'title\')}&lt;/title>
+	{$responsive_tag}
+	{$stylesheets}
+	{$icons}
+	{$scripts}";
+		}
+		
+		/**
+		 * @param string $position
+		 * @return string
+		 */
+		private function get_js($position = \'top\') {
+			$framework = $this->get( \'framework\' )."\n";
+			if($position === \'top\' && $this->get(\'js_at_the_top\') && !$this->get(\'js_at_the_bottom\')) {
+				$scripts = $this->js( $framework, $this->get( \'use_jquery\' ) );
+				if( $this->get( \'scripts\' ) ) {
+					foreach( $this->get( \'scripts\' ) as $script ) {
+						$scripts .= $this->js( self::FROM_SCRATCH, false, $script );
+					}
+				}
+				return $scripts;
+			}
+			elseif(!$this->get(\'js_at_the_top\') && $position === \'bottom\' && $this->get(\'js_at_the_bottom\')) {
+				$scripts = $this->js( $framework, $this->get( \'use_jquery\' ) )."\n";
+				if( $this->get( \'scripts\' ) ) {
+					foreach( $this->get( \'scripts\' ) as $script ) {
+						$scripts .= $this->js( self::FROM_SCRATCH, false, $script );
+					}
+				}
+				return $scripts;
+			}
+			
+			return \'\';
+		}
+		
+		/**
+		 * @return string
+		 */
+		protected function page_header(): string {
+			return \'\';
+		}
+		
+		/**
+		 * @return string
+		 */
+		protected function body(): string {
+			return \'\';
+		}
+		
+		/**
+		 * @return string
+		 */
+		protected function footer(): string {
+			return \'\';
+		}
+		
+		/**
+		 * @return string
+		 */
+		private final function main(): string {
+			$header = $this->page_header();
+			$footer = $this->footer();
+			$_header = $header === \'\' ? \'\' : "&lt;header class=\'{$this->get(\'header_class\')}\'>{$header}&lt;/header>";
+			$_footer = $footer === \'\' ? \'\' : "&lt;footer class=\'{$this->get(\'footer_class\')}\'>{$footer}&lt;/footer>";
+			return "
+			&lt;!DOCTYPE html>
+			&lt;html lang=\'{$this->translate->get_default_language()}\'>
+				&lt;head>
+					{$this->head()}
+				&lt;/head>
+				&lt;body>
+					{$_header}
+					&lt;main class=\'{$this->get(\'main_class\')}\'>
+						{$this->body()}
+					&lt;/main>
+					{$this->loader()}
+					{$_footer}
+					{$this->get_js(\'bottom\')}
+				&lt;/body>
+			&lt;/html>
+		";
+		}
+		
+		/**
+		 * @return string
+		 */
+		protected function loader(): string {
+			return \'\';
+		}
+		
+		/**
+		 * @return string
+		 */
+		public function render(): string {
+			if( !$this->get( \'title\' ) ) {
+				$this->assign( \'title\', \'MVC Router - Documentation\' );
+			}
+			return $this->main();
+		}
+	}', true)}
+					</div>
+				</div>
+			</section>
+			<section class='mdl-cell mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone'>
+				<h3>Utiliser une vue dans un controlleur {$this->top_button('utiliser_une_vue', 'binder_une_vue_a_l_injection_de_dependences')}</h3>
+				<div class='mdl-grid'>
+					<div class='mdl-cell mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone'>
+					Pour utiliser une vue, vous pouvez soit la récupérer
+					soit comme paramètre, soit comme propriété, soit grâce à son getter dans la propriété <code>inject</code>.
+					{$this->get_code_highlighted('php', '&lt;?php
+	namespace mvc_router\mvc\controllers;
+	
+	
+	use mvc_router\mvc\Controller;
+	
+	class Documentation extends Controller {
+		
+		/**
+		 * @route /documentation
+		 *
+		 * @param \mvc_router\mvc\views\Documentation $view
+		 * @return \mvc_router\mvc\views\Documentation
+		 */
+		public function index(\mvc_router\mvc\views\Documentation $view): \mvc_router\mvc\views\Documentation {
+			if(!$view->get(\'sub_page\'))
+				$view->assign(\'sub_page\', \'get_started\');
+			$view->assign(\'current_page\', \'documentation\');
+			return $view;
+		}
+		
+		/**
+		 * @route /documentation/views
+		 *
+		 * @param \mvc_router\mvc\views\Documentation $view
+		 * @return \mvc_router\mvc\views\Documentation
+		 */
+		public function views(\mvc_router\mvc\views\Documentation $view): \mvc_router\mvc\views\Documentation {
+			$view->assign(\'sub_page\', \'views\');
+			return $this->index($view);
+		}
+	}
+	
+', true)}
+					</div>
+				</div>
+			</section>
+			<section class='mdl-cell mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone'>
+				<h3>Binder une vue à l'injection de dépendences {$this->top_button('binder_une_vue_a_l_injection_de_dependences')}</h3>
+				<div class='mdl-grid'>
+					<div class='mdl-cell mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone'>
+						<p>Pour binder une vue à l'injection de dépdendences, rien de plus simple : </p>
+						<p>Ouvrez le fichier <code>dependencies.yaml</code> à la racine de votre répertoire custom.</p>
+						<p>Ajouter les lignes suivantes</p>
+						{$this->get_code_highlighted('yaml', 'add:
+  views:
+    \mvc_router\mvc\views\Documentation:
+      name: \'documentation_view\'
+      file: \'__DIR__/classes/mvc/views/Documentation.php\'
+					
+					', true)}
+						Une fois ces lignes ajoutées, ouvez un terminal et tapez la commande suivante
+						{$this->get_code_highlighted('shell', 'php exe.php install:update')}
+					</div>
+				</div>
+			</section>
+		</div>
+	</div>
+</div>
+HTML;
 		}
 		
 		protected function entities(): string {
-			return "<div class='mdl-grid'>
-						<div class='mdl-cell mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone'>
-							<h3>Entitées</h3>
-							<ul>
-								<li>Viserys</li>
-								<li>Daenerys</li>
-							</ul>
-						</div>
-					</div>";
+			return <<<HTML
+<div class='mdl-grid'>
+	<div class='mdl-cell mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone'>
+		<div class='mdl-grid'>
+			<div class='mdl-cell mdl-cell--3-col-desktop mdl-cell--hide-tablet mdl-cell--hide-phone'></div>
+			<div class='mdl-cell mdl-cell--6-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone'>
+				{$this->get_header_card(
+					'Les entités',
+					"Les entités de MVC ROUTER sont prévues pour gérer le stoquage d'une ligne d'une table d'une base de données relationnelle.",
+					[
+						'Créer une entité',
+						'Utiliser une entité',
+						'Binder une entité à l\'injection de dépendences',
+						'Créer la table correspondante à une entité'
+					]
+				)}
+			</div>
+		</div>
+		<div class='mdl-grid'>
+			<section class='mdl-cell mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone'>
+				<h3>Créer une entité {$this->top_button('creer_une_entite', 'utiliser_une_entite')}</h3>
+				<div class='mdl-grid'>
+					<div class='mdl-cell mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone'>
+						{$this->get_code_highlighted('php', '&lt;?php
+	namespace mvc_router\data\gesture\custom\entities;
+
+
+	use mvc_router\data\gesture\Entity;
+	
+	/**
+	 * Class User
+	 *
+	 * @package mvc_router\data\gesture\custom\entities
+	 *
+	 */
+	class User extends Entity {
+		/**
+		 * @var int $id
+		 * @primary_key
+		 * @auto_increment
+		 */
+		protected $id;
+		/**
+		 * @var int $fb_id
+		 */
+		protected $fb_id;
+		/**
+		 * @var string $address
+		 * @sql_type varchar
+		 */
+		protected $address;
+		/**
+		 * @var string $email
+		 * @sql_type varchar
+		 */
+		protected $email;
+		/**
+		 * @var string $phone
+		 * @sql_type varchar
+		 */
+		protected $phone;
+		/**
+		 * @var string $password
+		 * @sql_type varchar
+		 */
+		protected $password;
+		/**
+		 * @var string $description
+		 * @sql_type text
+		 */
+		protected $description;
+		/**
+		 * @var string $profil_img
+		 * @sql_type varchar
+		 */
+		protected $profil_img;
+		/**
+		 * @var bool $premium
+		 * @sql_type tinyint
+		 */
+		protected $premium;
+		/**
+		 * @var bool $active
+		 * @sql_type tinyint
+		 */
+		protected $active;
+		/**
+		 * @var string $activate_token
+		 * @sql_type varchar
+		 */
+		protected $activate_token;
+		/**
+		 * @var string $website
+		 * @sql_type varchar
+		 */
+		protected $website;
+		/**
+		 * @var string $pseudo
+		 * @sql_type varchar
+		 */
+		protected $pseudo;
+		/**
+		 * @var string $first_name
+		 * @sql_type varchar
+		 */
+		protected $first_name;
+		/**
+		 * @var string $last_name
+		 * @sql_type varchar
+		 */
+		protected $last_name;
+		/**
+		 * @var string $fb_access_token
+		 * @sql_type varchar
+		 */
+		protected $fb_access_token;
+		/**
+		 * @var string $local_access_token
+		 * @sql_type varchar
+		 */
+		protected $local_access_token;
+		/**
+		 * @var string $role
+		 * @sql_type varchar
+		 */
+		protected $role;
+		/**
+		 * @inheritDoc
+		 */
+		public function to_json() {
+			$json = parent::to_json();
+			unset($json[\'password\']);
+			$json[\'role\'] = $this->get(\'role\');
+			return $json;
+		}
+		/**
+		 * @inheritDoc
+		 */
+		public function get($key) {
+			switch ($key) {
+				case \'role\':
+					if(!$this->id) {
+						return \'\';
+					}
+					$user_role = $this->inject->get_role_manager()->get_all_from_userid($this->id);
+					if(empty($user_role)) {
+						return \'\';
+					}
+					return $user_role->get(\'role\');
+				default:
+					return parent::get($key);
+			}
+		}
+	}', true)}
+					</div>
+				</div>
+			</section>
+			<section class='mdl-cell mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone'>
+				<h3>Utiliser une entité {$this->top_button('utiliser_une_entite', 'binder_une_entite_a_l_injection_de_dependences')}</h3>
+				<div class='mdl-grid'>
+					<div class='mdl-cell mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone'>
+						{$this->get_code_highlighted('php', '&lt;?php
+	namespace mvc_router\mvc\controllers;
+	
+	use \mvc_router\mvc\Controller;
+	use \mvc_router\data\gesture\custom\entities\User;
+	
+	class MonController extends Controller {
+		public function index(User $user): string {
+			$entity = $this->inject->get_user_entity();
+			return $this->json($entity->to_json());
+		}
+	}
+', true)}
+					</div>
+				</div>
+			</section>
+			<section class='mdl-cell mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone'>
+				<h3>Binder une entité à l'injection de dépendences {$this->top_button('binder_une_entite_a_l_injection_de_dependences', 'creer_la_table_correspondante_a_une_entite')}</h3>
+				<div class='mdl-grid'>
+					<div class='mdl-cell mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone'>
+						Ouvrez le fichier <code>dependencies.yaml</code> et entrez les lignes suivantes :
+						{$this->get_code_highlighted('yaml', 'add:
+	data_models:
+	    \mvc_router\data\gesture\custom\entities\User:
+	        type: \'entity\'
+	        name: \'user_entity\'
+	        file: \'__DIR__/classes/datas/entities/User.php\'
+', true)}
+						Puis ouvrez un terminal et tapez la ligne de commande suivante :
+						{$this->get_code_highlighted('shell', 'php exe.php install:update')}
+					</div>
+				</div>
+			</section>
+			<section class='mdl-cell mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone'>
+				<h3>Créer la table correspondante à une entité {$this->top_button('creer_la_table_correspondante_a_une_entite')}</h3>
+				<div class='mdl-grid'>
+					<div class='mdl-cell mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone'>
+						Pour cela, il faut d'abbord créer le manager correspondant à l'entité.<br />
+						<a href='{$this->get_next_tab_url()}'>
+							<button class='mdl-button mdl-js-button mdl-button--raised mdl-button--colored'>Aller aux managers</button>
+						</a>
+					</div>
+				</div>
+			</section>
+		</div>
+	</div>
+</div>
+HTML;
 		}
 		
 		protected function managers(): string {
-			return "<div class='mdl-grid'>
-						<div class='mdl-cell mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone'>
-							<h3>Managers</h3>
-							<ul>
-								<li>Viserys</li>
-								<li>Daenerys</li>
-							</ul>
-						</div>
-					</div>";
+			return <<<HTML
+<div class='mdl-grid'>
+	<div class='mdl-cell mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone'>
+		<div class='mdl-grid'>
+			<div class='mdl-cell mdl-cell--3-col-desktop mdl-cell--hide-tablet mdl-cell--hide-phone'></div>
+			<div class='mdl-cell mdl-cell--6-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone'>
+				{$this->get_header_card(
+				'Les managers',
+				"Les managers de MVC ROUTER sont prévues pour gérer les requêtes SQL liées à une tables d'une base de données relationnelle.",
+				[
+					'Créer un manager',
+					'Utiliser un manager',
+					'Binder un manager à l\'injection de dépendences',
+					'Créer la table correspondante à un manager'
+				]
+			)}
+			</div>
+		</div>
+		<div class='mdl-grid'>
+			<section class='mdl-cell mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone'>
+				<h3>Créer un manager {$this->top_button('creer_un_manager', 'utiliser_un_manager')}</h3>
+				<div class='mdl-grid'>
+					<div class='mdl-cell mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone'>
+						{$this->get_code_highlighted('php', '&lt;?php
+	namespace mvc_router\data\gesture\custom\managers;
+
+
+	use mvc_router\data\gesture\Manager;
+	
+	/**
+	 * Class Manager
+	 *
+	 * @method array get_id_test_lol_from_id(int $id)
+	 * @method \mvc_router\data\gesture\custom\entities\User[] get_all_from_id(int $id)
+	 *
+	 * @package mvc_router\data\gesture\custom
+	 */
+	
+	class User extends Manager {}
+', true)}
+					</div>
+				</div>
+			</section>
+			<section class='mdl-cell mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone'>
+				<h3>Utiliser un manager {$this->top_button('utiliser_un_manager', 'binder_un_manager_a_l_injection_de_dependences')}</h3>
+				<div class='mdl-grid'>
+					<div class='mdl-cell mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone'>
+						{$this->get_code_highlighted('php', '&lt;?php
+	namespace mvc_router\mvc\controllers;
+	
+	use \mvc_router\mvc\Controller;
+	use \mvc_router\data\gesture\custom\managers\User;
+	
+	class MonController extends Controller {
+		public function index(User $users): string {
+			$manager = $this->inject->get_user_manager();
+			return $this->json($manager->get_entity()->to_json());
+		}
+	}
+', true)}
+					</div>
+				</div>
+			</section>
+			<section class='mdl-cell mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone'>
+				<h3>Binder un manager à l'injection de dépendences {$this->top_button('binder_un_manager_a_l_injection_de_dependences', 'creer_la_table_correspondante_a_un_manager')}</h3>
+				<div class='mdl-grid'>
+					<div class='mdl-cell mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone'>
+						Ouvrez le fichier <code>dependencies.yaml</code> et entrez les lignes suivantes :
+						{$this->get_code_highlighted('yaml', 'add:
+	data_models:
+	    \mvc_router\data\gesture\custom\managers\User:
+	        type: \'manager\'
+	        name: \'user_manager\'
+	        file: \'__DIR__/classes/datas/managers/User.php\'
+', true)}
+						Puis ouvrez un terminal et tapez la ligne de commande suivante :
+						{$this->get_code_highlighted('shell', 'php exe.php install:update')}
+					</div>
+				</div>
+			</section>
+			<section class='mdl-cell mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone'>
+				<h3>Créer la table correspondante à un manager {$this->top_button('creer_la_table_correspondante_a_un_manager')}</h3>
+				<div class='mdl-grid'>
+					<div class='mdl-cell mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone'>
+						Ouvrez un terminal et tapez la ligne de commande suivante
+						{$this->get_code_highlighted('shell', 'php exe.php install:databases')}
+					</div>
+				</div>
+			</section>
+		</div>
+	</div>
+</div>
+HTML;
 		}
 		
+		/**
+		 * @return string
+		 * @throws ReflectionException
+		 */
 		protected function commands(): string {
-			return "<div class='mdl-grid'>
-						<div class='mdl-cell mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone'>
-							<h3>Commandes</h3>
-							<ul>
-								<li>Viserys</li>
-								<li>Daenerys</li>
-							</ul>
-						</div>
-					</div>";
+			$helper = $this->inject->get_helpers();
+			$parser = $this->inject->get_phpdoc_parser();
+			$fs = $this->inject->get_service_fs();
+			$slash = $helper->get_slash();
+			$list = [];
+			$cmds = [];
+			$fs->browse_dir(function($path) use(&$cmds, $helper, $parser) {
+				$path = explode($helper->get_slash(), $path);
+				$cmd = end($path);
+				$cmd = explode('.', $cmd)[0];
+				$cmd = str_replace('Command', '', $cmd);
+				$cmd = strtolower($cmd);
+				$methods = $parser->get_class_methods(
+					$this->inject->{'get_command_'.$cmd}(),
+					PHPDocParser::COMMAND
+				);
+				$cmds[$cmd] = $methods;
+			},  false, __DIR__.$slash.'..'.$slash.'..'.$slash.'..'.$slash.'..'.$slash.'classes'.$slash.'commands');
+			$tmp = [];
+			foreach($cmds as $key => $values) {
+				$tmp[$key] = [];
+				foreach($values as $value) {
+					$doc = $parser->get_method_doc($this->inject->{"get_command_{$key}"}(), $value);
+					$syntaxes = isset($doc['syntax']) ? (is_array($doc['syntax']) ? array_map(function($syntax) {
+						return trim(htmlspecialchars($syntax));
+					}, $doc['syntax']) : [
+						trim(htmlspecialchars($doc['syntax']))
+					]) :[
+						"{$key}:{$value}"
+					];
+					$tmp[$key][$value] = $syntaxes;
+				}
+			}
+			foreach( $tmp as $command => $commands ) {
+				$list[] = $this->get_command_item($this->inject::get_class_from_name("command_{$command}"), $command, $commands);
+			}
+			$list = implode("\n", $list);
+			
+			return <<<HTML
+<div class='mdl-grid'>
+	<div class='mdl-cell mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone'>
+		<div class='mdl-grid'>
+			<div class='mdl-cell mdl-cell--3-col-desktop mdl-cell--hide-tablet mdl-cell--hide-phone'></div>
+			<div class='mdl-cell mdl-cell--6-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone'>
+				{$this->get_header_card(
+				'Les commandes',
+				"Les commandes de MVC ROUTER ont une syntaxe assez simplifiés ce qui permet à un utilisateur lambda d'être rapidement au point.",
+				[
+					'Liste des commandes',
+					'Utiliser une commande'
+				]
+			)}
+			</div>
+		</div>
+		<div class='mdl-grid'>
+			<section class='mdl-cell mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone'>
+				<h3>Liste des commandes {$this->top_button('liste_des_commandes', 'utiliser_une_commande')}</h3>
+				<div class='mdl-grid'>
+					<div class='mdl-cell mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone'>
+						<ul class='mdl-list'>{$list}</ul>
+					</div>
+				</div>
+			</section>
+			<section class='mdl-cell mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone'>
+				<h3>Utiliser une commande {$this->top_button('utiliser_une_commande')}</h3>
+				<div class='mdl-grid'>
+					<div class='mdl-cell mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone'>
+						<p>Il y a deux utilisations possibles de la commande.</p>
+						<p>Soit dans un terminal</p>
+						<p>Par example</p>
+						{$this->get_code_highlighted('shell', 'php exe.php generate:translations')}
+						<p>Soit dans votre code</p>
+						<p>Par example</p>
+						{$this->get_code_highlighted('php', '&lt;?php
+	
+	namespace mvc_router\mvc\controllers\backoffice;
+	
+	use mvc_router\mvc\Controller;
+	
+	class Translations extends Controller {
+		/** @var \mvc_router\services\Translate $translation */
+		public $translation;
+		
+		...
+		
+		/**
+		 * @route /backoffice/translations/regenerate
+		 * @param Logger $logger
+		 * @param Router $router
+		 * @return string
+		 * @throws Exception
+	     */
+		public function regenerate_translations(Logger $logger, Router $router) {
+			if($router->post(\'regenerate\')) {
+				$logger->types(Logger::CONSOLE);
+				$logger->separator(\'--------------------------------------------------------------\');
+	
+				$logger->log(\'Command: php exe.php generate:translation\');
+				$logger->log_separator();
+				$translation_command = $this->inject->get_commands()->run(\'generate:translations\');
+				$logger->log($translation_command);
+				$logger->log_separator();
+	
+				$reload_page = $this->translation->__(\'Recharger la page\');
+	
+				return "&lt;input type=\'button\' value=\'{$reload_page}\' onclick=\'window.location.reload()\' /&gt;";
+			}
+			return \'\';
+		}
+		
+		...
+		
+	}
+', true)}
+					</div>
+				</div>
+			</section>
+		</div>
+	</div>
+</div>
+HTML;
 		}
 		
 		protected function configurations(): string {
-			return "<div class='mdl-grid'>
-						<div class='mdl-cell mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone'>
-							<h3>Configurations</h3>
-							<ul>
-								<li>Viserys</li>
-								<li>Daenerys</li>
-							</ul>
-						</div>
-					</div>";
+			return <<<HTML
+<div class='mdl-grid'>
+	<div class='mdl-cell mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone'>
+		<div class='mdl-grid'>
+			<div class='mdl-cell mdl-cell--3-col-desktop mdl-cell--hide-tablet mdl-cell--hide-phone'></div>
+			<div class='mdl-cell mdl-cell--6-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone'>
+				{$this->get_header_card(
+				'Les configurations',
+				"Les configurations de MVC ROUTER des classes PHP qui peuvent vous servir à récupérer certaines données en base de données ou alors à partir d'un fichier text, JSON, YAML ou encore XML",
+				[
+					'Créer une configuration',
+					'Etendre une configuration',
+					'Utiliser une configuration',
+					'Binder une nouvelle conf à l\'injection de dépendences',
+					'Binder une extension de conf à l\'injection de dépendences',
+				]
+			)}
+			</div>
+		</div>
+		<div class='mdl-grid'>
+			<section class='mdl-cell mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone'>
+				<h3>Créer une configuration {$this->top_button('creer_une_configuration', 'etendre_une_configuration')}</h3>
+				<div class='mdl-grid'>
+					<div class='mdl-cell mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone'>
+						{$this->get_code_highlighted('php', '&lt;?php
+	namespace mvc_router\confs\custom;
+	
+	use mvc_router\Base;
+	
+	class WebSocket extends Base {
+		public function get_routes() {
+			return [
+				\'/chat\' => [
+					\'controller\' => $this->inject->get_ws_chat(),
+					\'allows\' => [\'*\'],
+				]
+			];
+		}
+	}
+', true)}
+						Ouvrez un terminal et tapez commande suivante
+						{$this->get_code_highlighted('shell', 'php exe.php install:update')}
+					</div>
+				</div>
+			</section>
+			<section class='mdl-cell mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone'>
+				<h3>Etendre une configuration {$this->top_button('etendre_une_configuration', 'utiliser_une_configuration')}</h3>
+				<div class='mdl-grid'>
+					<div class='mdl-cell mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone'>
+						Dans un répertoire <code>[custom-project-dir]/classes/confs</code>, créez un fichier <code>Mysql.php</code> et tapez le code suivant
+						{$this->get_code_highlighted('php', '&lt;?php
+	namespace mvc_router\confs\custom;
+
+	class Mysql extends \mvc_router\confs\Mysql {
+		public function before_construct() {
+			parent::before_construct();
+			$json = $this->inject->get_service_json();
+			$fs = $this->inject->get_service_fs();
+			$content = $json->decode($fs->read_file(__DIR__.\'/mysql.json\'), true);
+			if(isset($content[\'host\']) && $content[\'host\']) $this->host = $content[\'host\'];
+			if(isset($content[\'user\']) && $content[\'user\']) $this->user = $content[\'user\'];
+			if(isset($content[\'pass\']) && $content[\'pass\']) $this->pass = $content[\'pass\'];
+			if(isset($content[\'user_prefix\']) && $content[\'user_prefix\']) $this->user_prefix = $content[\'user_prefix\'];
+			if(isset($content[\'db_prefix\']) && $content[\'db_prefix\']) $this->db_prefix = $content[\'db_prefix\'];
+			if(isset($content[\'db_name\']) && $content[\'db_name\']) $this->db_name = $content[\'db_name\'];
+			if(isset($content[\'port\']) && $content[\'port\']) $this->port = $content[\'port\'];
+			$this->db_prefix = \'\';
+		}
+	}
+', true)}
+						Ouvrez un terminal et tapez commande suivante
+						{$this->get_code_highlighted('shell', 'php exe.php install:update')}
+					</div>
+				</div>
+			</section>
+			<section class='mdl-cell mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone'>
+				<h3>Utiliser une configuration {$this->top_button('utiliser_une_configuration', 'binder_une_nouvelle_configuration_a_l_injection_de_dependences')}</h3>
+				<div class='mdl-grid'>
+					<div class='mdl-cell mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone'>
+						{$this->get_code_highlighted('php', '&lt;?php
+namespace mvc_router\commands;
+
+use mvc_router\services\FileSystem;
+use mvc_router\services\Trigger;
+
+class TestCommand extends Command {
+	
+	...
+
+	/**
+	 * @return array|string
+	 */
+	public function mysql() {
+		$mysql = $this->confs->get_mysql();
+		if(!$mysql->is_connected()) {
+			return \'ERROR : Mysql is not connected\';
+		}
+		$mysql->query(\'SELECT * FROM `user` WHERE email = $1 OR email = $2\', [
+			\'nicolachoquet06250@gmail.com\',
+			\'yannchoquet@gmail.com\'
+		]);
+		$users = [];
+		while ($data = $mysql->fetch_assoc()) {
+			$users[] = $data;
+		}
+		return $users;
+	}
+
+	...
+	
+}
+', true)}
+					</div>
+				</div>
+			</section>
+			<section class='mdl-cell mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone'>
+				<h3>Binder une nouvelle configuration à l'injection de dépendences {$this->top_button('binder_une_nouvelle_conf_a_l_injection_de_dependences', 'binder_une_extension_de_configuration_a_l_injection_de_dependences')}</h3>
+				<div class='mdl-grid'>
+					<div class='mdl-cell mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone'>
+						Ouvrez le fichier dependencies.yaml et entrez les lignes suivantes
+						{$this->get_code_highlighted('yaml', 'add:
+	confs:
+	    \mvc_router\confs\custom\WebSocket:
+	        name: \'websocket_routes\'
+	        file: \'__DIR__/classes/confs/WebSocket.php\'
+	        parent: \'\mvc_router\Base\'
+', true)}
+						Ouvrez un terminal et tapez commande suivante
+						{$this->get_code_highlighted('shell', 'php exe.php install:update')}
+					</div>
+				</div>
+			</section>
+			<section class='mdl-cell mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone'>
+				<h3>Binder une extension de configuration à l'injection de dépendences {$this->top_button('binder_une_extension_de_conf_a_l_injection_de_dependences')}</h3>
+				<div class='mdl-grid'>
+					<div class='mdl-cell mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone'>
+						Ouvrez le fichier dependencies.yaml et entrez les lignes suivantes
+						{$this->get_code_highlighted('yaml', 'extends:
+	confs:
+	    \mvc_router\confs\Mysql:
+	        class:
+	            old: \'mvc_router\confs\Mysql\'
+	            new: \'mvc_router\confs\custom\Mysql\'
+	        name: \'mysql\'
+	        file: \'__DIR__/classes/confs/Mysql.php\'
+', true)}
+						Ouvrez un terminal et tapez commande suivante
+						{$this->get_code_highlighted('shell', 'php exe.php install:update')}
+					</div>
+				</div>
+			</section>
+		</div>
+	</div>
+</div>
+HTML;
 		}
 		
 		public function page_content(): string {
