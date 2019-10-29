@@ -24,10 +24,6 @@ add:
       name: 'documentation_view'
       file: '__DIR__/classes/mvc/views/Documentation.php'
 
-    \mvc_router\mvc\views\Api:
-      name: 'api_view'
-      file: '__DIR__/classes/mvc/views/Api.php'
-
   data_models:
     \mvc_router\data\gesture\custom\managers\User:
       type: 'manager'
@@ -73,10 +69,6 @@ add:
     \mvc_router\mvc\controllers\Documentation:
       name: 'doc_controller'
       file: '__DIR__/classes/mvc/controllers/front/Documentation.php'
-
-    \mvc_router\mvc\controllers\Api:
-      name: 'api_controller'
-      file: '__DIR__/classes/mvc/controllers/front/Api.php'
 
   ws_controllers:
     \mvc_router\mvc\controllers\websockets\Chat:

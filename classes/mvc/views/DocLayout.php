@@ -72,8 +72,6 @@
 						 href='/home'>Home</a>";
 			$menu .= "<a class='mdl-navigation__link".($this->get('current_page') === "documentation" ? " is-active" : "")."'
 						 href='/documentation'>Documentation</a>";
-			$menu .= "<a class='mdl-navigation__link".($this->get('current_page') === "api" ? " is-active" : "")."'
-						 href='/documentation/api'>API</a>";
 			$menu .= "</nav>";
 			return $menu;
 		}
