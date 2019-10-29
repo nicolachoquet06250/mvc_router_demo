@@ -93,7 +93,7 @@ extends:
   services:
     \mvc_router\services\FileGeneration:
       class:
-        old: \mvc_router\services\FileGeneration
-        new: \mvc_router\services\custom\FileGeneration
+        old: mvc_router\services\FileGeneration
+        new: mvc_router\services\custom\FileGeneration
       name: service_generation
       file: __DIR__/classes/services/FileGeneration.php
