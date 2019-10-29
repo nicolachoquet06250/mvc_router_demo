@@ -15,7 +15,6 @@
 		exit($e->getMessage());
 	}
 ';
-			var_dump('coucou');
 			file_put_contents(($this->helpers->is_unix() ? __DIR__.$slash.'..'.$slash.'..'.$slash : '').$slash.'htaccess.php', $htaccess_php);
 		}
 	}
