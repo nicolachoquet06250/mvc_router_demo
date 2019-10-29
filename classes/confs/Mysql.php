@@ -17,6 +17,5 @@ class Mysql extends \mvc_router\confs\Mysql {
 		if(isset($content['db_prefix']) && $content['db_prefix']) $this->db_prefix = $content['db_prefix'];
 		if(isset($content['db_name']) && $content['db_name']) $this->db_name = $content['db_name'];
 		if(isset($content['port']) && $content['port']) $this->port = $content['port'];
-		$this->db_prefix = '';
 	}
 }
