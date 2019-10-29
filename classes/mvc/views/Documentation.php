@@ -381,7 +381,7 @@ HTML;
 			return <<<HTML
 			<div class='mdl-grid'>
 				<div class='mdl-cell mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone'>
-					<table class='mdl-data-table mdl-js-data-table' style='width: 100%'>
+					<table class='mdl-data-table mdl-js-data-table mdl-cell--desktop-table' style='width: 100%'>
 						{$this->get_table_group('Prérequis', function() use($url_generator) {
 								return "<ul class='mdl-list'>
 											<li class='mdl-list__item mdl-list__item--three-line'>
