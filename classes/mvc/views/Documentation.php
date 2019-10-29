@@ -378,7 +378,7 @@ HTML;
 		
 		protected function get_started(): string {
 			$url_generator = $this->inject->get_url_generator();
-			return "
+			return <<<HTML
 			<div class='mdl-grid'>
 				<div class='mdl-cell mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone'>
 					<table class='mdl-data-table mdl-js-data-table' style='width: 100%'>
@@ -514,7 +514,8 @@ Zend Engine v3.2.0, Copyright (c) 1998-2018 Zend Technologies
 								<p>
 									Allez sur la plateforme GIT de votre choix ( Github, GitLab, une plateforme interne, ou autre ) puis créez un dépôt pour y mettre le code qui customisera votre projet.
 									{$this->get_code_highlighted('shell', 'cd [dir-name]
-php exe.php install:install -p repo=[custom-git-repo] dir=[repo-dir-name]')}
+php exe.php install:install -p repo=[custom-git-repo] dir=[repo-dir-name]
+php exe.php install:update')}
 								</p>
 								<p>
 									Si vous voulez faire une mise à jour de votre code, des bases de données ou installer de nouveaux packages composer lancez la commande suivante
@@ -566,7 +567,7 @@ php exe.php install:install -p repo=[custom-git-repo] dir=[repo-dir-name]')}
 					</table>
 				</div>
 			</div>
-			";
+HTML;
 		}
 		
 		protected function services(): string {
