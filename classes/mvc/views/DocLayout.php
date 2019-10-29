@@ -147,7 +147,7 @@
     {$this->get_documentation_menu()}
   </header>
   <div class='mdl-layout__drawer'>
-    <span class='mdl-layout-title logo' style='text-align: center;'>
+    <span class='mdl-layout-title logo' style='text-align: center; padding-left: unset;'>
 		<img src='/static/images/logo_mvc_router_black.png'
 			 data-base_src='/static/images/logo_mvc_router_black.png'
 			 alt='logo' class='responsive-img' />
