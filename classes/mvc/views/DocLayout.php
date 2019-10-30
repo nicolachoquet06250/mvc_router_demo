@@ -9,7 +9,7 @@
 			'title' => 'Caractéristiques',
 			'list'	=> [
 				'A propos'		 => '/about',
-				'Partenaires'	 => '/partners',
+//				'Partenaires'	 => '/partners',
 				'Mises à jours'	 => '/updates'
 			],
 		];
@@ -30,7 +30,7 @@
 				'Patterns'		    => '/tech/patterns',
 				'Utilisation'		=> '/tech/usage',
 				'Produits'		    => '/tech/products',
-				'Contrats'		    => '/tech/contracts',
+//				'Contrats'		    => '/tech/contracts',
 			],
 		];
 		
