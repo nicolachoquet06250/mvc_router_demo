@@ -10,7 +10,7 @@
 		
 		private $pages = [
 			'how_to_works' => 'Fonctionnement',
-			'patterns' => 'Motifs',
+			'patterns' => 'Patterns',
 			'usage' => 'Utilisation',
 			'products' => 'Produits',
 			'contracts' => 'Contrats'
@@ -37,7 +37,7 @@
 		}
 		
 		private function patterns() {
-			return "<h3>Motifs</h3>";
+			return "<h3>Patterns</h3>";
 		}
 		
 		private function usage() {

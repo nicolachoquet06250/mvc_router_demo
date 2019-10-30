@@ -27,7 +27,7 @@
 			'title' => 'Technologies',
 			'list'	=> [
 				'Fonctionnement'	=> '/tech/how-to-works',
-				'Motifs'		    => '/tech/patterns',
+				'Patterns'		    => '/tech/patterns',
 				'Utilisation'		=> '/tech/usage',
 				'Produits'		    => '/tech/products',
 				'Contrats'		    => '/tech/contracts',
