@@ -335,7 +335,7 @@ HTML;
 			return "<pre><code class='language-{$language} {$lines}'>{$code}</code></pre>";
 		}
 		
-		protected function get_header_card($title, $description, $links = []) {
+		protected function get_header_card($title, $description = '', $links = []) {
 			$map_links = function() use ($links) {
 				return implode("\n", array_map(function($link) {
 					$link_href = str_replace(['é', 'è', 'ê', 'ë'], 'e', $link);
@@ -346,15 +346,16 @@ HTML;
 							   class='mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect'>{$link}</a>";
 				}, $links));
 			};
+			$description = $description ? "<div class='mdl-card__supporting-text'>
+		<p>{$description}</p>
+	</div>" : "";
 			
 			return <<<HTML
 <div class='mdl-card mdl-shadow--2dp'>
 	<div class='mdl-card__title'>
 		<h2 class='mdl-card__title-text'>{$title}</h2>
 	</div>
-	<div class='mdl-card__supporting-text'>
-		<p>{$description}</p>
-	</div>
+	{$description}
 	<div class='mdl-card__actions mdl-card--border'>{$map_links()}</div>
 </div>
 HTML;
@@ -378,168 +379,189 @@ HTML;
 		
 		protected function get_started(): string {
 			$url_generator = $this->inject->get_url_generator();
+			$date = date('Y-m-d:H:i:s');
+			$username = $this->get_username();
+			$hostname = $this->get_hostname();
 			return <<<HTML
-			<div class='mdl-grid'>
-				<div class='mdl-cell mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone'>
-					<table class='mdl-data-table mdl-js-data-table mdl-cell--desktop-table' style='width: 100%'>
-						{$this->get_table_group('Prérequis', function() use($url_generator) {
-								return "<ul class='mdl-list'>
-											<li class='mdl-list__item mdl-list__item--three-line'>
-												<span class='mdl-list__item-primary-content'>
-													<img class='mdl-list__item-avatar'
-														 src='{$url_generator->get_static_url('images', 'logo_git.png', false)}'
-														 alt='logo git' />
-													<span>Un client GIT</span>
-													<div class='mdl-list__item-text-body'>
-														<section>
-															<h5>Linux Debian</h5>
-															{$this->get_code_highlighted('shell', 'sudo apt install git')}
-														</section>
-														<section>
-															<h5>Linux Fedora</h5>
-															{$this->get_code_highlighted('shell', 'dfn install git')}
-														</section>
-														<section>
-															<h5>Windows</h5>
-															Cliquez sur le lien suivant : <a href='https://git-scm.com/download/win'>https://git-scm.com/download/win</a>.
-														</section>
-														<section>
-															<h5>Mac OSX</h5>
-															Cliquez sur le lien suivant :
-															<a href='https://code.google.com/archive/p/git-osx-installer/' target='_blank'>https://code.google.com/archive/p/git-osx-installer/</a>.
-															<br />
-															Cliquez sur le lien 'Download the installers here'.
-															<br />
-															Choisissez ensuite la version que vous voulez télécharger.
-														</section>
-													</div>
-												</span>
-											</li>
-											<li class='mdl-list__item mdl-list__item--three-line'>
-												<span class='mdl-list__item-primary-content'>
-													<img class='mdl-list__item-avatar' alt='logo php'
-														 src='{$url_generator->get_static_url('images', 'logo_mysql.png', false)}' />
-													<span>MySQL</span>
-													<div class='mdl-list__item-text-body'>
-														<section>
-															<h5>Linux Debian</h5>
-															{$this->get_code_highlighted('shell', 'sudo apt install mysql')}
-														</section>
-														<section>
-															<h5>Linux Fedora</h5>
-															{$this->get_code_highlighted('shell', 'dfn install mysql')}
-														</section>
-														<section>
-															<h5>Windows</h5>
-															Cliquez sur le lien suivant : <a href='https://dev.mysql.com/downloads/mysql/'>https://dev.mysql.com/downloads/mysql/</a>.
-															<br />
-															Cliquez sur 'Download' de la première ligne.
-														</section>
-														<section>
-															<h5>Mac OSX</h5>
-															Cliquez sur le lien suivant : <a href='https://dev.mysql.com/downloads/mysql/'>https://dev.mysql.com/downloads/mysql/</a>.
-															<br />
-															Cliquez sur 'Download' de la première ligne.
-														</section>
-													</div>
-												</span>
-											</li>
-											<li class='mdl-list__item mdl-list__item--three-line'>
-												<span class='mdl-list__item-primary-content'>
-													<img class='mdl-list__item-avatar' alt='logo php'
-														 src='{$url_generator->get_static_url('images', 'logo_php.png', false)}' />
-													<span>PHP 7.X CLI / CGI</span>
-													<div class='mdl-list__item-text-body'>
-														<section>
-															<h5>Linux Debian</h5>
-															{$this->get_code_highlighted('shell', 'sudo apt install php7.X php7.X-dev php7.X-curl php7.X-mysql php7.X-common php7.X-cli php7.X-cgi php7.X-json php7.X-readline composer')}
-														</section>
-														<section>
-															<h5>Linux Fedora</h5>
-															{$this->get_code_highlighted('shell', 'dfn install php7.X php7.X-dev php7.X-curl php7.X-mysql php7.X-common php7.X-cli php7.X-cgi php7.X-json php7.X-readline composer')}
-														</section>
-														<section>
-															<h5>Windows</h5>
-															Cliquez sur le lien suivant : <a href='https://windows.php.net/download'>https://windows.php.net/download</a>.
-															<br />
-															Télécharger la dernière version.
-														</section>
-														<section>
-															<h5>Mac OSX</h5>
-															{$this->get_code_highlighted('shell', 'curl -s http://php-osx.liip.ch/install.sh | bash -s 7.3
-export PATH=/usr/local/php7.3/bin:\$PATH
-php -v
-
-PHP 7.3.11 (cli) (built: Feb	1 2018 13:23:34) ( NTS )
-Copyright (c) 1997-2018 The PHP Group
-Zend Engine v3.2.0, Copyright (c) 1998-2018 Zend Technologies
-		with Zend OPcache v7.2.2, Copyright (c) 1999-2018, by Zend Technologies
-		with Xdebug v2.6.0, Copyright (c) 2002-2018, by Derick Rethans')}
-														</section>
-													</div>
-												</span>
-											</li>
-											<li class='mdl-list__item mdl-list__item--three-line'>
-												<span class='mdl-list__item-primary-content'>
-													<img class='mdl-list__item-avatar'
-														 src='{$url_generator->get_static_url('images', 'logo_phpstorm.png', false)}' />
-													<span>Un IDE</span>
-													<div class='mdl-list__item-text-body'>
-														<section>
-															<h5>JetBrains PhpStrom</h5>
-															<p><a href='https://www.jetbrains.com/phpstorm/'>https://www.jetbrains.com/phpstorm/</a></p>
-														</section>
-														<section>
-															<h5>Visual Studio Code</h5>
-															<p><a href='https://code.visualstudio.com/'>https://code.visualstudio.com/</a></p>
-														</section>
-														<section>
-															<h5>Eclipse PHP</h5>
-															<p><a href='https://www.eclipse.org/pdt/'>https://www.eclipse.org/pdt/</a></p>
-														</section>
-														<section>
-															<h5>Sublime Text</h5>
-															<p><a href='http://www.sublimetext.com/'>http://www.sublimetext.com/</a></p>
-														</section>
-													</div>
-												</span>
-											</li>
-										</ul>";
-							}, false)}
-						{$this->get_table_group('Installation', function() use($url_generator) {
-								return "<p>
-									Clonez le dépôt GIT <code>https://github.com/usernameachoquet06250/dependency_injection_system.git</code>
-									dans un répertoire que vous nommerez comme vous voudrez.
-								</p>
-								<p>
-									Allez sur la plateforme GIT de votre choix ( Github, GitLab, une plateforme interne, ou autre ) puis créez un dépôt pour y mettre le code qui customisera votre projet.
-									{$this->get_code_highlighted('shell', 'cd [dir-name]
+<div class='mdl-grid'>
+	<div class='mdl-cell mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone mdl-cell--desktop-table'>
+		<div class='mdl-grid'>
+			<div class='mdl-cell mdl-cell--3-col-desktop mdl-cell--hide-tablet mdl-cell--hide-phone'></div>
+			<div class='mdl-cell mdl-cell--6-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone'>
+				{$this->get_header_card(
+				'Commencer',
+				'',
+				[
+					'Prérequis',
+					'Installation',
+					'Lancer une commande',
+				])}
+			</div>
+		</div>
+		<div class='mdl-grid'>
+			<section class='mdl-cell mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone'>
+				<h3>Prérequis {$this->top_button('prerequis', 'installation')}</h3>
+				<ul class='mdl-list'>
+					<li class='mdl-list__item mdl-list__item--three-line'>
+						<div class='mdl-list__item-primary-content'>
+							<img class='mdl-list__item-avatar'
+							     src='{$url_generator->get_static_url('images', 'logo_git.png', false)}'
+							     alt='logo git'/>
+							<span>Un client GIT</span>
+							<div class='mdl-list__item-text-body'>
+								<section>
+									<h5>Linux Debian</h5>
+									{$this->get_code_highlighted('shell', 'sudo apt install git')}
+								</section>
+								<section>
+									<h5>Linux Fedora</h5>
+									{$this->get_code_highlighted('shell', 'dfn install git')}
+								</section>
+								<section>
+									<h5>Windows</h5>
+									Cliquez sur le lien suivant :
+									<a href='https://git-scm.com/download/win'>https://git-scm.com/download/win</a>.
+								</section>
+								<section>
+									<h5>Mac OSX</h5>
+									Cliquez sur le lien suivant :
+									<a href='https://code.google.com/archive/p/git-osx-installer/'
+									   target='_blank'>https://code.google.com/archive/p/git-osx-installer/</a>.
+									<br/>
+									Cliquez sur le lien 'Download the installers here'.
+									<br/>
+									Choisissez ensuite la version que vous voulez télécharger.
+								</section>
+							</div>
+						</div>
+					</li>
+					<li class='mdl-list__item mdl-list__item--three-line'>
+						<div class='mdl-list__item-primary-content'>
+							<img class='mdl-list__item-avatar' alt='logo php'
+							     src='{$url_generator->get_static_url( 'images', 'logo_mysql.png', false )}'/>
+							<span>MySQL</span>
+							<div class='mdl-list__item-text-body'>
+								<section>
+									<h5>Linux Debian</h5>
+									{$this->get_code_highlighted( 'shell', 'sudo apt install mysql' )}
+								</section>
+								<section>
+									<h5>Linux Fedora</h5>
+									{$this->get_code_highlighted( 'shell', 'dfn install mysql' )}
+								</section>
+								<section>
+									<h5>Windows</h5>
+									Cliquez sur le lien suivant : <a
+										href='https://dev.mysql.com/downloads/mysql/'>https://dev.mysql.com/downloads/mysql/</a>.
+									<br/>
+									Cliquez sur 'Download' de la première ligne.
+								</section>
+								<section>
+									<h5>Mac OSX</h5>
+									Cliquez sur le lien suivant : <a
+										href='https://dev.mysql.com/downloads/mysql/'>https://dev.mysql.com/downloads/mysql/</a>.
+									<br/>
+									Cliquez sur 'Download' de la première ligne.
+								</section>
+							</div>
+						</div>
+					</li>
+					<li class='mdl-list__item mdl-list__item--three-line'>
+						<div class='mdl-list__item-primary-content'>
+							<img class='mdl-list__item-avatar' alt='logo php'
+							     src='{$url_generator->get_static_url( 'images', 'logo_php.png', false )}'/>
+							<span>PHP 7.X CLI / CGI</span>
+							<div class='mdl-list__item-text-body'>
+								<section>
+									<h5>Linux Debian</h5>
+									{$this->get_code_highlighted( 'shell', 'sudo apt install php7.X php7.X-dev php7.X-curl php7.X-mysql php7.X-common php7.X-cli php7.X-cgi php7.X-json php7.X-readline composer' )}
+								</section>
+								<section>
+									<h5>Linux Fedora</h5>
+									{$this->get_code_highlighted( 'shell', 'dfn install php7.X php7.X-dev php7.X-curl php7.X-mysql php7.X-common php7.X-cli php7.X-cgi php7.X-json php7.X-readline composer' )}
+								</section>
+								<section>
+									<h5>Windows</h5>
+									Cliquez sur le lien suivant : <a
+										href='https://windows.php.net/download'>https://windows.php.net/download</a>.
+									<br/>
+									Télécharger la dernière version.
+								</section>
+								<section>
+									<h5>Mac OSX</h5>
+									{$this->get_code_highlighted( 'shell', 'curl -s http://php-osx.liip.ch/install.sh | bash -s 7.3
+		export PATH=/usr/local/php7.3/bin:\$PATH
+		php -v
+		
+		PHP 7.3.11 (cli) (built: Feb	1 2018 13:23:34) ( NTS )
+		Copyright (c) 1997-2018 The PHP Group
+		Zend Engine v3.2.0, Copyright (c) 1998-2018 Zend Technologies
+				with Zend OPcache v7.2.2, Copyright (c) 1999-2018, by Zend Technologies
+				with Xdebug v2.6.0, Copyright (c) 2002-2018, by Derick Rethans' )}
+								</section>
+							</div>
+						</div>
+					</li>
+					<li class='mdl-list__item mdl-list__item--three-line'>
+						<div class='mdl-list__item-primary-content'>
+							<img class='mdl-list__item-avatar'
+							     src='{$url_generator->get_static_url( 'images', 'logo_phpstorm.png', false )}'/>
+							<span>Un IDE</span>
+							<div class='mdl-list__item-text-body'>
+								<section>
+									<h5>JetBrains PhpStrom</h5>
+									<p><a href='https://www.jetbrains.com/phpstorm/'>https://www.jetbrains.com/phpstorm/</a></p>
+								</section>
+								<section>
+									<h5>Visual Studio Code</h5>
+									<p><a href='https://code.visualstudio.com/'>https://code.visualstudio.com/</a></p>
+								</section>
+								<section>
+									<h5>Eclipse PHP</h5>
+									<p><a href='https://www.eclipse.org/pdt/'>https://www.eclipse.org/pdt/</a></p>
+								</section>
+								<section>
+									<h5>Sublime Text</h5>
+									<p><a href='http://www.sublimetext.com/'>http://www.sublimetext.com/</a></p>
+								</section>
+							</div>
+						</div>
+					</li>
+				</ul>
+			</section>
+			<section class='mdl-cell mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone'>
+				<h3>Installation {$this->top_button('installation', 'lancer_une_commande')}</h3>
+				<p>
+					Clonez le dépôt GIT <code>https://github.com/usernameachoquet06250/dependency_injection_system.git</code>
+					dans un répertoire que vous nommerez comme vous voudrez.
+				</p>
+				<p>
+					Allez sur la plateforme GIT de votre choix ( Github, GitLab, une plateforme interne, ou autre ) puis créez un dépôt pour y mettre le code qui customisera votre projet.
+					{$this->get_code_highlighted('shell', 'cd [dir-name]
 php exe.php install:install -p repo=[custom-git-repo] dir=[repo-dir-name]
 php exe.php install:update')}
-								</p>
-								<p>
-									Si vous voulez faire une mise à jour de votre code, des bases de données ou installer de nouveaux packages composer lancez la commande suivante
-									{$this->get_code_highlighted('shell', 'php exe.php install:update')}
-								</p>
-								<p>
-									<a href='{$url_generator->get_url_from_ctrl_and_method($this->inject->get_doc_controller(), 'commands')}'>
-										<button class='mdl-button mdl-js-button mdl-button--raised mdl-button--colored'>
-											Pour plus de détails sur les commandes
-										</button>
-									</a>
-								</p>";
-							})}
-						{$this->get_table_group('Lancer une commande', function() {
-								$date = date('Y-m-d:H:i:s');
-								$username = $this->get_username();
-								$hostname = $this->get_hostname();
-								return "<p>
-											Pour lancer une commande, Le framework met à disposition un utilitaire cli.
-										</p>
-										<p>
-											Pour voir les commandes à disposition, leurs syntaxes et leurs paramètres, allez dans un terminal et tapez <code>php exe.php --help</code>
-											{$this->get_code_highlighted('shell', "php exe.php --help
-											
+				</p>
+				<p>
+					Si vous voulez faire une mise à jour de votre code, des bases de données ou installer de nouveaux packages composer lancez la commande suivante
+					{$this->get_code_highlighted('shell', 'php exe.php install:update')}
+				</p>
+				<p>
+					<a href='{$url_generator->get_url_from_ctrl_and_method($this->inject->get_doc_controller(), 'commands')}'>
+						<button class='mdl-button mdl-js-button mdl-button--raised mdl-button--colored'>
+							Pour plus de détails sur les commandes
+						</button>
+					</a>
+				</p>
+			</section>
+			<section class='mdl-cell mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone'>
+				<h3>Lancer une commande {$this->top_button('lancer_une_commande')}</h3>
+				<p>
+					Pour lanc	</table>mmande, Le framework met à disposition un utilitaire cli.
+				</p>
+				<p>
+					Pour voir les commandes à disposition, leurs syntaxes et leurs paramètres, allez dans un terminal et tapez <code>php exe.php --help</code>
+					{$this->get_code_highlighted('shell', "php exe.php --help
+					
 {$username}@{$hostname}~{$date} | |=========================| clone |=========================|
 {$username}@{$hostname}~{$date} | |= repo -> php exe.php clone:repo
 {$username}@{$hostname}~{$date} | |= test_stats -> php exe.php clone:test_stats
@@ -562,11 +584,11 @@ php exe.php install:update')}
 {$username}@{$hostname}~{$date} | |= helper_is_cli -> php exe.php test:helper_is_cli
 {$username}@{$hostname}~{$date} | |= mysql -> php exe.php test:mysql
 {$username}@{$hostname}~{$date} | |= number_of_lines_in_project -> php exe.php test:number_of_lines_in_project")}
-										</p>";
-							})}
-					</table>
-				</div>
-			</div>
+				</p>
+			</section>
+		</div>
+	</div>
+</div>
 HTML;
 		}
 		
