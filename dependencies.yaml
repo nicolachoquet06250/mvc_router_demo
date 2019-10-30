@@ -24,26 +24,29 @@ add:
       name: 'documentation_view'
       file: '__DIR__/classes/mvc/views/Documentation.php'
 
-  data_models:
-    \mvc_router\data\gesture\custom\managers\User:
-      type: 'manager'
-      name: 'user_manager'
-      file: '__DIR__/classes/datas/managers/User.php'
+    \mvc_router\mvc\views\Help:
+      name: 'help_view'
+      file: '__DIR__/classes/mvc/views/Help.php'
 
-    \mvc_router\data\gesture\custom\managers\Role:
-      type: 'manager'
-      name: 'role_manager'
-      file: '__DIR__/classes/datas/managers/Role.php'
+    \mvc_router\mvc\views\Confidentiality:
+      name: 'confidentiality_view'
+      file: '__DIR__/classes/mvc/views/Confidentiality.php'
 
-    \mvc_router\data\gesture\custom\entities\User:
-      type: 'entity'
-      name: 'user_entity'
-      file: '__DIR__/classes/datas/entities/User.php'
+    \mvc_router\mvc\views\Characteristics:
+      name: 'characteristics_view'
+      file: '__DIR__/classes/mvc/views/Characteristics.php'
 
-    \mvc_router\data\gesture\custom\entities\Role:
-      type: 'entity'
-      name: 'role_entity'
-      file: '__DIR__/classes/datas/entities/Role.php'
+    \mvc_router\mvc\views\Details:
+      name: 'details_view'
+      file: '__DIR__/classes/mvc/views/Details.php'
+
+    \mvc_router\mvc\views\Technologies:
+      name: 'technologies_view'
+      file: '__DIR__/classes/mvc/views/Technologies.php'
+
+    \mvc_router\mvc\views\Faq:
+      name: 'faq_view'
+      file: '__DIR__/classes/mvc/views/Faq.php'
 
   controllers:
     \mvc_router\mvc\controllers\MyController:
@@ -69,6 +72,51 @@ add:
     \mvc_router\mvc\controllers\Documentation:
       name: 'doc_controller'
       file: '__DIR__/classes/mvc/controllers/front/Documentation.php'
+
+    \mvc_router\mvc\controllers\Help:
+      name: 'help_controller'
+      file: '__DIR__/classes/mvc/controllers/front/Help.php'
+
+    \mvc_router\mvc\controllers\Confidentiality:
+      name: 'confidentiality_controller'
+      file: '__DIR__/classes/mvc/controllers/front/Confidentiality.php'
+
+    \mvc_router\mvc\controllers\Characteristics:
+      name: 'characteristics_controller'
+      file: '__DIR__/classes/mvc/controllers/front/Characteristics.php'
+
+    \mvc_router\mvc\controllers\Details:
+      name: 'details_controller'
+      file: '__DIR__/classes/mvc/controllers/front/Details.php'
+
+    \mvc_router\mvc\controllers\Technologies:
+      name: 'technologies_controller'
+      file: '__DIR__/classes/mvc/controllers/front/Technologies.php'
+
+    \mvc_router\mvc\controllers\Faq:
+      name: 'faq_controller'
+      file: '__DIR__/classes/mvc/controllers/front/Faq.php'
+
+  data_models:
+    \mvc_router\data\gesture\custom\managers\User:
+      type: 'manager'
+      name: 'user_manager'
+      file: '__DIR__/classes/datas/managers/User.php'
+
+    \mvc_router\data\gesture\custom\managers\Role:
+      type: 'manager'
+      name: 'role_manager'
+      file: '__DIR__/classes/datas/managers/Role.php'
+
+    \mvc_router\data\gesture\custom\entities\User:
+      type: 'entity'
+      name: 'user_entity'
+      file: '__DIR__/classes/datas/entities/User.php'
+
+    \mvc_router\data\gesture\custom\entities\Role:
+      type: 'entity'
+      name: 'role_entity'
+      file: '__DIR__/classes/datas/entities/Role.php'
 
   ws_controllers:
     \mvc_router\mvc\controllers\websockets\Chat:

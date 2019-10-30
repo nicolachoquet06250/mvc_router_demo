@@ -15,6 +15,6 @@
 		exit($e->getMessage());
 	}
 ';
-			file_put_contents(($this->helpers->is_unix() ? __DIR__.$slash.'..'.$slash.'..'.$slash : '').$slash.'htaccess.php', $htaccess_php);
+			file_put_contents(__DIR__.$slash.'..'.$slash.'..'.$slash.'htaccess.php', $htaccess_php);
 		}
 	}

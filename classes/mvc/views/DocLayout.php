@@ -6,28 +6,49 @@
 	
 	class DocLayout extends Layout {
 		protected $first_footer_list = [
-			'title' => '',
-			'list'  => [],
+			'title' => 'Caractéristiques',
+			'list'	=> [
+				'A propos'		 => '/about',
+				'Partenaires'	 => '/partners',
+				'Mises à jours'	 => '/updates'
+			],
 		];
 		
 		protected $second_footer_list = [
-			'title' => '',
-			'list'  => [],
+			'title' => 'Détails',
+			'list'	=> [
+				'Specs'		     => '/details/specs',
+				'Outils'		 => '/details/tools',
+				'Resources'      => '/details/resources'
+			],
 		];
 		
 		protected $third_footer_list = [
-			'title' => '',
-			'list'  => [],
+			'title' => 'Technologies',
+			'list'	=> [
+				'Fonctionnement'	=> '/tech/how-to-works',
+				'Motifs'		    => '/tech/patterns',
+				'Utilisation'		=> '/tech/usage',
+				'Produits'		    => '/tech/products',
+				'Contrats'		    => '/tech/contracts',
+			],
 		];
 		
 		protected $fourth_footer_list = [
-			'title' => '',
-			'list'  => [],
+			'title' => 'FAQ',
+			'list'	=> [
+//				'Questions'      => '/faq/questions',
+//				'Réponses'       => '/faq/answers',
+				'Contactez nous' => '/faq/contact-us',
+			],
 		];
 		
 		protected $footer_bottom = [
-			'title' => '',
-			'list'  => [],
+			'title' => '&copy; MVC Router',
+			'list'	=> [
+				'Aide'				=> '/mvc-router/help',
+				'Confidentialité'	=> '/mvc-router/confidentiality'
+			],
 		];
 		
 		protected $tabs = [];
@@ -54,6 +75,10 @@
 			return '';
 		}
 		
+		protected function tabs_added_before_menu() {
+			return '';
+		}
+		
 		public function menu($navigation = 'desktop') {
 			$menu = "<nav class='mdl-navigation {$navigation}-navigation'>";
 			if($navigation === 'mobile') {
@@ -62,18 +87,24 @@
 		<div class='mdl-cell mdl-cell--12-col'>
 			<label class='mdl-switch mdl-js-switch mdl-js-ripple-effect' for='dark-theme'>
 				<input type='checkbox' id='dark-theme' class='mdl-switch__input' onchange='switch2dark()'>
-				<span class='mdl-switch__label'>Dark Thème</span>
+				<span class='mdl-switch__label'>Dark Theme</span>
 			</label>
 		</div>
 	</div>
 ";
 			}
+			$menu .= $this->tabs_added_before_menu();
 			$menu .= "<a class='mdl-navigation__link".($this->get('current_page') === "home" ? " is-active" : "")."'
-						 href='/home'>Home</a>";
+						 href='/home'>Accueil</a>";
 			$menu .= "<a class='mdl-navigation__link".($this->get('current_page') === "documentation" ? " is-active" : "")."'
 						 href='/documentation'>Documentation</a>";
+			$menu .= $this->tabs_added_after_menu();
 			$menu .= "</nav>";
 			return $menu;
+		}
+		
+		protected function tabs_added_after_menu() {
+			return '';
 		}
 		
 		protected function get_footer_list($list, $bottom = false) {
