@@ -562,28 +562,28 @@ php exe.php install:update')}
 					Pour voir les commandes à disposition, leurs syntaxes et leurs paramètres, allez dans un terminal et tapez <code>php exe.php --help</code>
 					{$this->get_code_highlighted('shell', "php exe.php --help
 					
-{$username}@{$hostname}~{$date} | |=========================| clone |=========================|
-{$username}@{$hostname}~{$date} | |= repo -> php exe.php clone:repo
-{$username}@{$hostname}~{$date} | |= test_stats -> php exe.php clone:test_stats
-{$username}@{$hostname}~{$date} | |=========================| generate |=========================|
-{$username}@{$hostname}~{$date} | |= dependencies -> php exe.php generate:dependencies
-{$username}@{$hostname}~{$date} | |= base_files -> php exe.php generate:base_files
-{$username}@{$hostname}~{$date} | |= translations -> php exe.php generate:translations
-{$username}@{$hostname}~{$date} | |= service -> php exe.php generate:service
-{$username}@{$hostname}~{$date} | |=========================| help |=========================|
-{$username}@{$hostname}~{$date} | |= index -> php exe.php --help, help:index -p cmd=&lt;value&gt; [method=&lt;value&gt;?]
-{$username}@{$hostname}~{$date} | |= home -> php exe.php help:home
-{$username}@{$hostname}~{$date} | |=========================| install |=========================|
-{$username}@{$hostname}~{$date} | |= install -> php exe.php install:install -p [dir=&lt;value>&gt;demo] [repo=&lt;value&gt;?https://github.com/usernameachoquet06250/mvc_router_demo.git]
-{$username}@{$hostname}~{$date} | |= update -> php exe.php install:update
-{$username}@{$hostname}~{$date} | |= databases -> php exe.php install:databases
-{$username}@{$hostname}~{$date} | |=========================| start |=========================|
-{$username}@{$hostname}~{$date} | |= websocket_server -> php exe.php start:websocket_server -p [host=&lt;value&gt;?localhost] [address=&lt;value&gt;?127.0.0.1] [port=&lt;value&gt;?8080]
-{$username}@{$hostname}~{$date} | |= server -> php exe.php start:server -p [port=&lt;value&gt;?8080] [directory=&lt;value&gt;?]
-{$username}@{$hostname}~{$date} | |=========================| test |=========================|
-{$username}@{$hostname}~{$date} | |= helper_is_cli -> php exe.php test:helper_is_cli
-{$username}@{$hostname}~{$date} | |= mysql -> php exe.php test:mysql
-{$username}@{$hostname}~{$date} | |= number_of_lines_in_project -> php exe.php test:number_of_lines_in_project")}
+username@hostname~{$date} | |=========================| clone |=========================|
+username@hostname~{$date} | |= repo -> php exe.php clone:repo
+username@hostname~{$date} | |= test_stats -> php exe.php clone:test_stats
+username@hostname~{$date} | |=========================| generate |=========================|
+username@hostname~{$date} | |= dependencies -> php exe.php generate:dependencies
+username@hostname~{$date} | |= base_files -> php exe.php generate:base_files
+username@hostname~{$date} | |= translations -> php exe.php generate:translations
+username@hostname~{$date} | |= service -> php exe.php generate:service
+username@hostname~{$date} | |=========================| help |=========================|
+username@hostname~{$date} | |= index -> php exe.php --help, help:index -p cmd=&lt;value&gt; [method=&lt;value&gt;?]
+username@hostname~{$date} | |= home -> php exe.php help:home
+username@hostname~{$date} | |=========================| install |=========================|
+username@hostname~{$date} | |= install -> php exe.php install:install -p [dir=&lt;value>&gt;demo] [repo=&lt;value&gt;?https://github.com/usernameachoquet06250/mvc_router_demo.git]
+username@hostname~{$date} | |= update -> php exe.php install:update
+username@hostname~{$date} | |= databases -> php exe.php install:databases
+username@hostname~{$date} | |=========================| start |=========================|
+username@hostname~{$date} | |= websocket_server -> php exe.php start:websocket_server -p [host=&lt;value&gt;?localhost] [address=&lt;value&gt;?127.0.0.1] [port=&lt;value&gt;?8080]
+username@hostname~{$date} | |= server -> php exe.php start:server -p [port=&lt;value&gt;?8080] [directory=&lt;value&gt;?]
+username@hostname~{$date} | |=========================| test |=========================|
+username@hostname~{$date} | |= helper_is_cli -> php exe.php test:helper_is_cli
+username@hostname~{$date} | |= mysql -> php exe.php test:mysql
+username@hostname~{$date} | |= number_of_lines_in_project -> php exe.php test:number_of_lines_in_project")}
 				</p>
 			</section>
 		</div>
@@ -727,31 +727,31 @@ touch MonService.php
 							$hostname = $this->get_hostname();
 							return "php exe.php install:update
 
-{$username}@{$hostname}~{$date} | command: git pull
-{$username}@{$hostname}~{$date} | Already up to date.
-{$username}@{$hostname}~{$date} | ---------------------------------------------------------------------------
-{$username}@{$hostname}~{$date} | command: git -C C:\\Users\\nicol\\PhpstormProjects\\mvc_router\\demo pull
-{$username}@{$hostname}~{$date} | Already up to date.
-{$username}@{$hostname}~{$date} | ---------------------------------------------------------------------------
-{$username}@{$hostname}~{$date} | command: composer update
+username@hostname~{$date} | command: git pull
+username@hostname~{$date} | Already up to date.
+username@hostname~{$date} | ---------------------------------------------------------------------------
+username@hostname~{$date} | command: git -C C:\\Users\\nicol\\PhpstormProjects\\mvc_router\\demo pull
+username@hostname~{$date} | Already up to date.
+username@hostname~{$date} | ---------------------------------------------------------------------------
+username@hostname~{$date} | command: composer update
 Loading composer repositories with package information
 Updating dependencies (including require-dev)
 Nothing to install or update
 Generating autoload files
-{$username}@{$hostname}~{$date} | ---------------------------------------------------------------------------
-{$username}@{$hostname}~{$date} | command: generate:dependencies -p custom-file=C:\\Users\\nicol\\PhpstormProjects\\mvc_router\\demo/update_dependencies.php
-{$username}@{$hostname}~{$date} | DependencyWrapper.php and ConfWrapper.php has been generated !
-{$username}@{$hostname}~{$date} | ---------------------------------------------------------------------------
-{$username}@{$hostname}~{$date} | command: generate:base_files -p custom-dir=C:\\Users\\nicol\\PhpstormProjects\\mvc_router\\demo
-{$username}@{$hostname}~{$date} | All default files has been generated ! Don't forget to fill the classes/confs/mysql.json file
-{$username}@{$hostname}~{$date} | ---------------------------------------------------------------------------
-{$username}@{$hostname}~{$date} | command: generate:translations
-{$username}@{$hostname}~{$date} | Les langues fr-FR, en-GB, en-US ont bien été générés
-{$username}@{$hostname}~{$date} | ---------------------------------------------------------------------------
-{$username}@{$hostname}~{$date} | command: install:databases
-{$username}@{$hostname}~{$date} | user => true
-{$username}@{$hostname}~{$date} | role => true
-{$username}@{$hostname}~{$date} | ---------------------------------------------------------------------------
+username@hostname~{$date} | ---------------------------------------------------------------------------
+username@hostname~{$date} | command: generate:dependencies -p custom-file=C:\\Users\\nicol\\PhpstormProjects\\mvc_router\\demo/update_dependencies.php
+username@hostname~{$date} | DependencyWrapper.php and ConfWrapper.php has been generated !
+username@hostname~{$date} | ---------------------------------------------------------------------------
+username@hostname~{$date} | command: generate:base_files -p custom-dir=C:\\Users\\nicol\\PhpstormProjects\\mvc_router\\demo
+username@hostname~{$date} | All default files has been generated ! Don't forget to fill the classes/confs/mysql.json file
+username@hostname~{$date} | ---------------------------------------------------------------------------
+username@hostname~{$date} | command: generate:translations
+username@hostname~{$date} | Les langues fr-FR, en-GB, en-US ont bien été générés
+username@hostname~{$date} | ---------------------------------------------------------------------------
+username@hostname~{$date} | command: install:databases
+username@hostname~{$date} | user => true
+username@hostname~{$date} | role => true
+username@hostname~{$date} | ---------------------------------------------------------------------------
 
 ";
 						})())}
@@ -769,32 +769,32 @@ Generating autoload files
 							$hostname = $this->get_hostname();
 							return "php exe.php generate:service -p name=hello_world site=demo is_singleton=true
 
-{$username}@{$hostname}~{$date} | command: git pull
-{$username}@{$hostname}~{$date} | Already up to date.
-{$username}@{$hostname}~{$date} | ---------------------------------------------------------------------------
-{$username}@{$hostname}~{$date} | command: git -C C:\Users\\nicol\PhpstormProjects\mvc_router\demo pull
-{$username}@{$hostname}~{$date} | Already up to date.
-{$username}@{$hostname}~{$date} | ---------------------------------------------------------------------------
-{$username}@{$hostname}~{$date} | command: composer update
+username@hostname~{$date} | command: git pull
+username@hostname~{$date} | Already up to date.
+username@hostname~{$date} | ---------------------------------------------------------------------------
+username@hostname~{$date} | command: git -C C:\Users\\nicol\PhpstormProjects\mvc_router\demo pull
+username@hostname~{$date} | Already up to date.
+username@hostname~{$date} | ---------------------------------------------------------------------------
+username@hostname~{$date} | command: composer update
 Loading composer repositories with package information
 Updating dependencies (including require-dev)
 Nothing to install or update
 Generating autoload files
-{$username}@{$hostname}~{$date} | ---------------------------------------------------------------------------
-{$username}@{$hostname}~{$date} | command: generate:dependencies -p custom-file=C:\Users\\nicol\PhpstormProjects\mvc_router\demo/update_dependencies.php
-{$username}@{$hostname}~{$date} | DependencyWrapper.php and ConfWrapper.php has been generated !
-{$username}@{$hostname}~{$date} | ---------------------------------------------------------------------------
-{$username}@{$hostname}~{$date} | command: generate:base_files -p custom-dir=C:\Users\\nicol\PhpstormProjects\mvc_router\demo
-{$username}@{$hostname}~{$date} | All default files has been generated ! Don't forget to fill the classes/confs/mysql.json file
-{$username}@{$hostname}~{$date} | ---------------------------------------------------------------------------
-{$username}@{$hostname}~{$date} | command: generate:translations
-{$username}@{$hostname}~{$date} | Les langues fr-FR, en-GB, en-US ont bien été générés
-{$username}@{$hostname}~{$date} | ---------------------------------------------------------------------------
-{$username}@{$hostname}~{$date} | command: install:databases
-{$username}@{$hostname}~{$date} | user => true
-{$username}@{$hostname}~{$date} | role => true
-{$username}@{$hostname}~{$date} | ---------------------------------------------------------------------------
-{$username}@{$hostname}~{$date} | Le service hello_world à été généré et intégré dans dependencies.yaml avec succès !";
+username@hostname~{$date} | ---------------------------------------------------------------------------
+username@hostname~{$date} | command: generate:dependencies -p custom-file=C:\Users\\nicol\PhpstormProjects\mvc_router\demo/update_dependencies.php
+username@hostname~{$date} | DependencyWrapper.php and ConfWrapper.php has been generated !
+username@hostname~{$date} | ---------------------------------------------------------------------------
+username@hostname~{$date} | command: generate:base_files -p custom-dir=C:\Users\\nicol\PhpstormProjects\mvc_router\demo
+username@hostname~{$date} | All default files has been generated ! Don't forget to fill the classes/confs/mysql.json file
+username@hostname~{$date} | ---------------------------------------------------------------------------
+username@hostname~{$date} | command: generate:translations
+username@hostname~{$date} | Les langues fr-FR, en-GB, en-US ont bien été générés
+username@hostname~{$date} | ---------------------------------------------------------------------------
+username@hostname~{$date} | command: install:databases
+username@hostname~{$date} | user => true
+username@hostname~{$date} | role => true
+username@hostname~{$date} | ---------------------------------------------------------------------------
+username@hostname~{$date} | Le service hello_world à été généré et intégré dans dependencies.yaml avec succès !";
 						})())}
 					</div>
 				</div>
@@ -854,31 +854,31 @@ touch MonService.php
 				$hostname = $this->get_hostname();
 				return "php exe.php install:update
 
-{$username}@{$hostname}~{$date} | command: git pull
-{$username}@{$hostname}~{$date} | Already up to date.
-{$username}@{$hostname}~{$date} | ---------------------------------------------------------------------------
-{$username}@{$hostname}~{$date} | command: git -C C:\\Users\\nicol\\PhpstormProjects\\mvc_router\\demo pull
-{$username}@{$hostname}~{$date} | Already up to date.
-{$username}@{$hostname}~{$date} | ---------------------------------------------------------------------------
-{$username}@{$hostname}~{$date} | command: composer update
+username@hostname~{$date} | command: git pull
+username@hostname~{$date} | Already up to date.
+username@hostname~{$date} | ---------------------------------------------------------------------------
+username@hostname~{$date} | command: git -C C:\\Users\\nicol\\PhpstormProjects\\mvc_router\\demo pull
+username@hostname~{$date} | Already up to date.
+username@hostname~{$date} | ---------------------------------------------------------------------------
+username@hostname~{$date} | command: composer update
 Loading composer repositories with package information
 Updating dependencies (including require-dev)
 Nothing to install or update
 Generating autoload files
-{$username}@{$hostname}~{$date} | ---------------------------------------------------------------------------
-{$username}@{$hostname}~{$date} | command: generate:dependencies -p custom-file=C:\\Users\\nicol\\PhpstormProjects\\mvc_router\\demo/update_dependencies.php
-{$username}@{$hostname}~{$date} | DependencyWrapper.php and ConfWrapper.php has been generated !
-{$username}@{$hostname}~{$date} | ---------------------------------------------------------------------------
-{$username}@{$hostname}~{$date} | command: generate:base_files -p custom-dir=C:\\Users\\nicol\\PhpstormProjects\\mvc_router\\demo
-{$username}@{$hostname}~{$date} | All default files has been generated ! Don't forget to fill the classes/confs/mysql.json file
-{$username}@{$hostname}~{$date} | ---------------------------------------------------------------------------
-{$username}@{$hostname}~{$date} | command: generate:translations
-{$username}@{$hostname}~{$date} | Les langues fr-FR, en-GB, en-US ont bien été générés
-{$username}@{$hostname}~{$date} | ---------------------------------------------------------------------------
-{$username}@{$hostname}~{$date} | command: install:databases
-{$username}@{$hostname}~{$date} | user => true
-{$username}@{$hostname}~{$date} | role => true
-{$username}@{$hostname}~{$date} | ---------------------------------------------------------------------------
+username@hostname~{$date} | ---------------------------------------------------------------------------
+username@hostname~{$date} | command: generate:dependencies -p custom-file=C:\\Users\\nicol\\PhpstormProjects\\mvc_router\\demo/update_dependencies.php
+username@hostname~{$date} | DependencyWrapper.php and ConfWrapper.php has been generated !
+username@hostname~{$date} | ---------------------------------------------------------------------------
+username@hostname~{$date} | command: generate:base_files -p custom-dir=C:\\Users\\nicol\\PhpstormProjects\\mvc_router\\demo
+username@hostname~{$date} | All default files has been generated ! Don't forget to fill the classes/confs/mysql.json file
+username@hostname~{$date} | ---------------------------------------------------------------------------
+username@hostname~{$date} | command: generate:translations
+username@hostname~{$date} | Les langues fr-FR, en-GB, en-US ont bien été générés
+username@hostname~{$date} | ---------------------------------------------------------------------------
+username@hostname~{$date} | command: install:databases
+username@hostname~{$date} | user => true
+username@hostname~{$date} | role => true
+username@hostname~{$date} | ---------------------------------------------------------------------------
 
 ";
 			})())}
@@ -896,32 +896,32 @@ Generating autoload files
 				$hostname = $this->get_hostname();
 				return "php exe.php generate:customized_service -p name=mon_service site=demo is_singleton=true
 
-{$username}@{$hostname}~{$date} | command: git pull
-{$username}@{$hostname}~{$date} | Already up to date.
-{$username}@{$hostname}~{$date} | ---------------------------------------------------------------------------
-{$username}@{$hostname}~{$date} | command: git -C C:\Users\\nicol\PhpstormProjects\mvc_router\demo pull
-{$username}@{$hostname}~{$date} | Already up to date.
-{$username}@{$hostname}~{$date} | ---------------------------------------------------------------------------
-{$username}@{$hostname}~{$date} | command: composer update
+username@hostname~{$date} | command: git pull
+username@hostname~{$date} | Already up to date.
+username@hostname~{$date} | ---------------------------------------------------------------------------
+username@hostname~{$date} | command: git -C C:\Users\\nicol\PhpstormProjects\mvc_router\demo pull
+username@hostname~{$date} | Already up to date.
+username@hostname~{$date} | ---------------------------------------------------------------------------
+username@hostname~{$date} | command: composer update
 Loading composer repositories with package information
 Updating dependencies (including require-dev)
 Nothing to install or update
 Generating autoload files
-{$username}@{$hostname}~{$date} | ---------------------------------------------------------------------------
-{$username}@{$hostname}~{$date} | command: generate:dependencies -p custom-file=C:\Users\\nicol\PhpstormProjects\mvc_router\demo/update_dependencies.php
-{$username}@{$hostname}~{$date} | DependencyWrapper.php and ConfWrapper.php has been generated !
-{$username}@{$hostname}~{$date} | ---------------------------------------------------------------------------
-{$username}@{$hostname}~{$date} | command: generate:base_files -p custom-dir=C:\Users\\nicol\PhpstormProjects\mvc_router\demo
-{$username}@{$hostname}~{$date} | All default files has been generated ! Don't forget to fill the classes/confs/mysql.json file
-{$username}@{$hostname}~{$date} | ---------------------------------------------------------------------------
-{$username}@{$hostname}~{$date} | command: generate:translations
-{$username}@{$hostname}~{$date} | Les langues fr-FR, en-GB, en-US ont bien été générés
-{$username}@{$hostname}~{$date} | ---------------------------------------------------------------------------
-{$username}@{$hostname}~{$date} | command: install:databases
-{$username}@{$hostname}~{$date} | user => true
-{$username}@{$hostname}~{$date} | role => true
-{$username}@{$hostname}~{$date} | ---------------------------------------------------------------------------
-{$username}@{$hostname}~{$date} | Le service mon_service à été généré en extension du service de base et intégré dans dependencies.yaml avec succès !";
+username@hostname~{$date} | ---------------------------------------------------------------------------
+username@hostname~{$date} | command: generate:dependencies -p custom-file=C:\Users\\nicol\PhpstormProjects\mvc_router\demo/update_dependencies.php
+username@hostname~{$date} | DependencyWrapper.php and ConfWrapper.php has been generated !
+username@hostname~{$date} | ---------------------------------------------------------------------------
+username@hostname~{$date} | command: generate:base_files -p custom-dir=C:\Users\\nicol\PhpstormProjects\mvc_router\demo
+username@hostname~{$date} | All default files has been generated ! Don't forget to fill the classes/confs/mysql.json file
+username@hostname~{$date} | ---------------------------------------------------------------------------
+username@hostname~{$date} | command: generate:translations
+username@hostname~{$date} | Les langues fr-FR, en-GB, en-US ont bien été générés
+username@hostname~{$date} | ---------------------------------------------------------------------------
+username@hostname~{$date} | command: install:databases
+username@hostname~{$date} | user => true
+username@hostname~{$date} | role => true
+username@hostname~{$date} | ---------------------------------------------------------------------------
+username@hostname~{$date} | Le service mon_service à été généré en extension du service de base et intégré dans dependencies.yaml avec succès !";
 			})())}
 					</div>
 				</div>
