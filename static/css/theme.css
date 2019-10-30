@@ -124,6 +124,12 @@ section[id*=scroll-] table tr th, section[id*=scroll-] table tr td {
     background: url('/static/images/service.png') center / cover;
 }
 
+.mdl-card > .mdl-card__title.faq.contact-us {
+    color: #fff;
+    height: 250px;
+    background: url('/static/images/contactez_nous.png') center / cover;
+}
+
 .mdl-card > .mdl-card__supporting-text {
     padding-right: 15px;
 }
@@ -143,20 +149,27 @@ pre[class*=language-] {
 }
 
 pre[class*=language-],
-.mdl-layout__content {
+.mdl-layout__content,
+.mdl-textfield__input {
     scrollbar-width: thin;
 }
 
 pre[class*=language-]::-webkit-scrollbar,
-.mdl-layout__content::-webkit-scrollbar {
+.mdl-layout__content::-webkit-scrollbar,
+.mdl-textfield__input::-webkit-scrollbar {
     width: 5px;
     height: 8px;
     background-color: #ffffff; /* or add it to the track */
 }
 /* Add a thumb */
 pre[class*=language-]::-webkit-scrollbar-thumb,
-.mdl-layout__content::-webkit-scrollbar-thumb {
+.mdl-layout__content::-webkit-scrollbar-thumb,
+.mdl-textfield__input::-webkit-scrollbar-thumb {
     background: #aaaaaa;
+}
+
+.mdl-textfield__label {
+    color: #000000;
 }
 
 /* -- DARK THEME -- */
@@ -247,19 +260,30 @@ pre[class*=language-]::-webkit-scrollbar-thumb,
 }
 
 .theme--dark pre[class*=language-],
-.theme--dark .mdl-layout__content {
+.theme--dark .mdl-layout__content,
+.theme--dark .mdl-textfield__input {
     scrollbar-color: #673AB7 #000000;
     scrollbar-width: thin;
 }
 
 .theme--dark pre[class*=language-]::-webkit-scrollbar,
-.theme--dark .mdl-layout__content::-webkit-scrollbar {
+.theme--dark .mdl-layout__content::-webkit-scrollbar,
+.theme--dark .mdl-textfield__input::-webkit-scrollbar {
     width: 5px;
     height: 8px;
     background-color: #000000; /* or add it to the track */
 }
 /* Add a thumb */
 .theme--dark pre[class*=language-]::-webkit-scrollbar-thumb,
-.theme--dark .mdl-layout__content::-webkit-scrollbar-thumb {
+.theme--dark .mdl-layout__content::-webkit-scrollbar-thumb,
+.theme--dark .mdl-textfield__input::-webkit-scrollbar-thumb {
     background: #673AB7;
+}
+
+.theme--dark .mdl-textfield__input {
+    border-bottom-color: #eeeeee;
+}
+
+.theme--dark .mdl-textfield__label {
+    color: #eeeeee;
 }
