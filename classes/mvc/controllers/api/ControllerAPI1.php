@@ -7,6 +7,11 @@ namespace mvc_router\mvc\controllers\api;
 use mvc_router\mvc\Controller;
 use mvc_router\router\Router;
 
+/**
+ * Class ControllerAPI1
+ * @package mvc_router\mvc\controllers\api
+ * @api
+ */
 class ControllerAPI1 extends Controller {
 	/**
 	 * @route \/api\/user\/([a-zA-Z0-9\-\_\+\@]+)

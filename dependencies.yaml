@@ -97,6 +97,10 @@ add:
       name: 'faq_controller'
       file: '__DIR__/classes/mvc/controllers/front/Faq.php'
 
+    \mvc_router\mvc\controllers\api\Mailer:
+      name: 'mailer_api_controller'
+      file: '__DIR__/classes/mvc/controllers/api/Mailer.php'
+
   data_models:
     \mvc_router\data\gesture\custom\managers\User:
       type: 'manager'

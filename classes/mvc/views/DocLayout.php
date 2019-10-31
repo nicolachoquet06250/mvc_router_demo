@@ -6,15 +6,6 @@
 	
 	class DocLayout extends Layout {
 		protected $first_footer_list = [
-			'title' => 'Caractéristiques',
-			'list'	=> [
-				'A propos'		 => '/about',
-//				'Partenaires'	 => '/partners',
-				'Mises à jours'	 => '/updates'
-			],
-		];
-		
-		protected $second_footer_list = [
 			'title' => 'Détails',
 			'list'	=> [
 				'Specs'		     => '/details/specs',
@@ -23,18 +14,17 @@
 			],
 		];
 		
-		protected $third_footer_list = [
+		protected $second_footer_list = [
 			'title' => 'Technologies',
 			'list'	=> [
 				'Fonctionnement'	=> '/tech/how-to-works',
-				'Patterns'		    => '/tech/patterns',
+//				'Patterns'		    => '/tech/patterns',
 				'Utilisation'		=> '/tech/usage',
 				'Produits'		    => '/tech/products',
-//				'Contrats'		    => '/tech/contracts',
 			],
 		];
 		
-		protected $fourth_footer_list = [
+		protected $third_footer_list = [
 			'title' => 'FAQ',
 			'list'	=> [
 //				'Questions'      => '/faq/questions',
@@ -194,7 +184,6 @@
 			{$this->get_footer_list($this->first_footer_list)}
 			{$this->get_footer_list($this->second_footer_list)}
 			{$this->get_footer_list($this->third_footer_list)}
-			{$this->get_footer_list($this->fourth_footer_list)}
 		</div>
 		{$this->get_footer_list($this->footer_bottom, true)}
 	</footer>
