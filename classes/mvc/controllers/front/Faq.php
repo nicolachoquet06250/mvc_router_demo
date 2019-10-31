@@ -37,11 +37,9 @@
 		 *
 		 * @param \mvc_router\mvc\views\Faq $view
 		 * @return \mvc_router\mvc\views\Faq
-		 * @throws Exception404
 		 */
 		public function contact_us(\mvc_router\mvc\views\Faq $view):\mvc_router\mvc\views\Faq {
 			$view->assign('current_page', 'contact_us');
-			throw new Exception404('NOT FOUND !!', Error::JSON);
 			return $view;
 		}
 	}
