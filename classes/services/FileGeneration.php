@@ -4,8 +4,8 @@
 	
 	
 	class FileGeneration extends \mvc_router\services\FileGeneration {
-		public function generate_base_htaccess() {
-			parent::generate_base_htaccess();
+		public function generate_base_htaccess( $custom_dir ) {
+			parent::generate_base_htaccess( $custom_dir );
 			$slash = $this->helpers->get_slash();
 			$htaccess_php = '<?php
 	try {
