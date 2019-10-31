@@ -4,7 +4,9 @@
 	namespace mvc_router\mvc\controllers;
 	
 	
+	use mvc_router\http\errors\Exception404;
 	use mvc_router\mvc\Controller;
+	use mvc_router\services\Error;
 	
 	class Faq extends Controller {
 		
@@ -35,9 +37,11 @@
 		 *
 		 * @param \mvc_router\mvc\views\Faq $view
 		 * @return \mvc_router\mvc\views\Faq
+		 * @throws Exception404
 		 */
 		public function contact_us(\mvc_router\mvc\views\Faq $view):\mvc_router\mvc\views\Faq {
 			$view->assign('current_page', 'contact_us');
+			throw new Exception404('NOT FOUND !!', Error::JSON);
 			return $view;
 		}
 	}
